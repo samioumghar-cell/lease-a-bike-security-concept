@@ -97,14 +97,25 @@
         }
         .detail-accordeon-header-main.color-blue-purple {
             background-color: #4c1d95; /* Donkerblauw richting paars */
+            color: white; /* Wit voor contrast */
         }
         .detail-accordeon-header-main.color-baby-blue {
-            background-color: #a7f3d0; /* Licht babyblauw */
-            color: #1f2937; /* Donkerdere tekst voor lichtblauwe achtergrond */
+            background-color: #3b82f6; /* Helder Lichtblauw (Tailwind blue-500) */
+            color: #ffffff; /* Witte tekst voor goed contrast */
         }
+        
+        /* LICHTGROENE KLEUR (Voor controle/privacy) */
+        .detail-accordeon-header-main.color-light-green {
+            background-color: #A7F3D0; /* Lichtgroen/Mint */
+            color: #047857; /* Donkergroene tekst voor contrast */
+        }
+        .detail-accordeon-header-main.color-light-green .toggle-icon {
+             color: #047857; /* Donkergroen voor contrast */
+        }
+        
         /* Icon kleur aanpassen voor de babyblauwe header */
         .detail-accordeon-header-main.color-baby-blue .toggle-icon {
-            color: #047857; /* Donkergroen voor contrast */
+            color: #ffffff; /* Wit voor contrast */
         }
 
 
@@ -230,13 +241,15 @@
             display: inline-block;
             margin-right: 3rem; /* Ruimte tussen merken */
             font-weight: 700;
-            font-size: 1.5rem; /* Grote, duidelijke namen */
-            color: #4b5563; /* Donkerdere grijstint */
+            font-size: 2.25rem; /* **AANPASSING: Grotere Font Size** */
+            line-height: 2.5rem; /* **AANPASSING: Lijnhoogte voor leesbaarheid** */
+            color: #4b5563; 
             transition: color 0.3s;
-            padding: 0.5rem 1rem; /* Padding voor de rand */
-            border-radius: 0.25rem; /* Lichte afronding */
+            padding: 0.5rem 1rem; 
+            border-radius: 0.25rem; 
             border: 1px solid #1f2937; /* Dunne zwarte rand */
-            text-decoration: none; /* Geen onderstreping */
+            text-decoration: none; 
+            box-sizing: border-box; /* Zorgt dat padding en border binnen de afmetingen vallen */
         }
         .partner-item-bordered:hover {
             opacity: 0.8; 
@@ -426,11 +439,11 @@
             
             <!-- 2.1 PRIVACY BLUEPRINT ACCORDEON -->
             <section id="detail-privacy-accordeon" class="mt-20">
-                <h2 class="text-4xl font-extrabold text-[#1f2937] mb-6">Kerncompliance: De Privacy Blueprint (AVG/GDPR)</h2>
+                <h2 class="text-4xl font-extrabold text-[#1f2937] mb-6">Onze AVG Data Governance</h2>
                 
                 <div class="space-y-3">
                     <div id="privacy-content-main-header" class="detail-accordeon-header-main color-green flex justify-between items-center" onclick="toggleMainDetails('privacy-content-main')">
-                        <span>Uw Data is Beschermd: Minimalisatie & Retentie</span>
+                        <span>Datamanagement & Minimalisatie</span>
                         <span class="text-xl text-white toggle-icon">+</span>
                     </div>
                     <div id="privacy-content-main" class="detail-accordeon-content-main">
@@ -468,7 +481,7 @@
                         </div>
                     </div>
                     
-                    <div id="privacy-design-main-header" class="detail-accordeon-header-main color-blue-purple flex justify-between items-center" onclick="toggleMainDetails('privacy-design-main')">
+                    <div id="privacy-design-main-header" class="detail-accordeon-header-main color-baby-blue flex justify-between items-center" onclick="toggleMainDetails('privacy-design-main')">
                         <span>Privacy by Design is Onze Norm</span>
                         <span class="text-xl text-white toggle-icon">+</span>
                     </div>
@@ -507,9 +520,9 @@
                         </div>
                     </div>
                     
-                    <div id="privacy-beheer-main-header" class="detail-accordeon-header-main color-baby-blue flex justify-between items-center" onclick="toggleMainDetails('privacy-beheer-main')">
+                    <div id="privacy-beheer-main-header" class="detail-accordeon-header-main color-blue-purple flex justify-between items-center" onclick="toggleMainDetails('privacy-beheer-main')">
                         <span>Volledige Controle over Uw Informatie</span>
-                        <span class="text-xl text-emerald-600 toggle-icon">+</span> 
+                        <span class="text-xl text-white toggle-icon">+</span> 
                     </div>
                     <div id="privacy-beheer-main" class="detail-accordeon-content-main">
                         <div class="space-y-4">
@@ -543,7 +556,7 @@
                 <h2 class="text-4xl font-extrabold text-orange-500 mb-6">Kernverdediging: De Digitale Vesting</h2>
 
                 <div class="space-y-3">
-                    <div id="infra-maatregelen-main-header" class="detail-accordeon-header-main color-blue-purple flex justify-between items-center" onclick="toggleMainDetails('infra-maatregelen-main')">
+                    <div id="infra-maatregelen-main-header" class="detail-accordeon-header-main color-baby-blue flex justify-between items-center" onclick="toggleMainDetails('infra-maatregelen-main')">
                         <span>Uw Data is Beschermd: Hardening & Monitoring</span>
                         <span class="text-xl text-white toggle-icon">+</span>
                     </div>
@@ -572,9 +585,9 @@
                         </div>
                     </div>
                     
-                    <div id="infra-toegang-main-header" class="detail-accordeon-header-main color-baby-blue flex justify-between items-center" onclick="toggleMainDetails('infra-toegang-main')">
+                    <div id="infra-toegang-main-header" class="detail-accordeon-header-main color-blue-purple flex justify-between items-center" onclick="toggleMainDetails('infra-toegang-main')">
                         <span>Toegang is Strikt Gecontroleerd</span>
-                        <span class="text-xl text-emerald-600 toggle-icon">+</span>
+                        <span class="text-xl text-white toggle-icon">+</span>
                     </div>
                     <div id="infra-toegang-main" class="detail-accordeon-content-main">
                         <div class="space-y-4">
@@ -647,9 +660,9 @@
                 <h2 class="text-3xl font-bold text-gray-800 mb-6">Keurmerk: SOC 2 & Pon Fundatie</h2>
                 
                 <div class="space-y-3">
-                    <div id="assurance-soc2-main-header" class="detail-accordeon-header-main color-baby-blue flex justify-between items-center" onclick="toggleMainDetails('assurance-soc2-main')">
+                    <div id="assurance-soc2-main-header" class="detail-accordeon-header-main color-blue-purple flex justify-between items-center" onclick="toggleMainDetails('assurance-soc2-main')">
                         <span>Onafhankelijk Bewijs: SOC 2 Assurance</span>
-                        <span class="text-xl text-emerald-600 toggle-icon">+</span>
+                        <span class="text-xl text-white toggle-icon">+</span>
                     </div>
                     <div id="assurance-soc2-main" class="detail-accordeon-content-main">
                         <div class="space-y-4">
@@ -788,7 +801,7 @@
                                     <span class="text-xl text-emerald-600 toggle-icon">+</span>
                                 </div>
                                 <div id="faq-privacy-3" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Nee, Lease a Bike bewaart gegevens volgens onze eigen wettelijke bewaartermijnen (bijv. voor fiscale en contractuele verplichtingen). Echter, u als werkgever ontvangt aan het einde van de overeenkomst een afgesproken set van geanonimiseerde data of de wettelijk vereiste data.</p>
+                                    <p class="py-3 text-gray-600">Nee, in de meeste gevallen zijn zowel de werkgever als Lease a Bike Verwerkingsverantwoordelijken (Controller-Controller relatie). Dit komt doordat we beide het doel en de middelen van de verwerking van werknemersgegevens bepalen (u voor arbeidsvoorwaarden, wij voor de leaseovereenkomst). Dit is vastgelegd in onze samenwerkingsovereenkomst.</p>
                                 </div>
                             </div>
                         </div>
