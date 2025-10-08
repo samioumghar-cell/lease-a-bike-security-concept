@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lease a Bike - Security Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Chosen Palette: Warm Neutrals with Green Accent -->
+    <!-- Application Structure Plan: De FAQ is gesegmenteerd en de SOC 2 badge is nu ingebouwd als Base64-afbeelding voor gegarandeerde weergave. -->
+    <!-- Visualization & Content Choices: De SOC 2 badge is nu een Base64-ingebouwde PNG. De interactieve tips en de gestructureerde FAQ blijven behouden. Library/Method: HTML/Tailwind, Vanilla JS. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .security-card {
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .security-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .security-card.active {
+            border-color: #047857;
+            background-color: #E6FFF6;
+        }
+        /* Aangepaste styling voor het logo */
+        .soc2-logo {
+            width: 48px; /* Zorgt voor consistente grootte */
+            height: 48px;
+            object-fit: contain;
+        }
+        .content-section, .faq-answer {
+            display: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease-out;
+        }
+        .content-section.show, .faq-answer.show {
+            display: block;
+            max-height: 1500px;
+        }
+        .btn-primary {
+            background-color: #059669;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #047857;
+        }
+        .commitment-box {
+            display: inline-flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            background-color: #ECFDF5;
+            border: 1px solid #34D399;
+            border-radius: 0.5rem;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #065F46;
+        }
+        .faq-question {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .faq-question:hover {
+            background-color: #f1f2f3;
+        }
+        /* Custom styles for interactive tips (tooltip behavior) */
+        .interactive-tip {
+            position: relative;
+            cursor: pointer;
+            z-index: 10;
+        }
+        .tooltip-content {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            background-color: #10B981; /* Emerald 500 */
+            color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+            z-index: 20;
+            text-align: left;
+            font-size: 0.875rem;
+        }
+        .interactive-tip:hover .tooltip-content,
+        .interactive-tip.focused .tooltip-content {
+            opacity: 1;
+            visibility: visible;
+        }
+        /* Touch indicator triangle */
+        .tooltip-content::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border-width: 5px;
+            border-style: solid;
+            border-color: #10B981 transparent transparent transparent;
+        }
+        /* Custom styling for the logo banner */
+        .logo-banner {
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid #E5E7EB;
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+
+        <header class="text-center mb-16">
+            <!-- Logo Banner Placeholder -->
+            <div class="logo-banner">
+                <div class="flex items-center justify-center space-x-2 text-2xl font-bold text-gray-900">
+                    <span class="text-3xl text-emerald-600">🚲</span>
+                    <span>Lease a Bike</span>
+                </div>
+            </div>
+            <!-- Einde Logo Banner -->
+            
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">Uw Veiligheid: Transparantie & Data Privacy (AVG)</h1>
+            <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Bij Lease a Bike is de bescherming van uw persoonsgegevens onze hoogste prioriteit. Onze processen en systemen zijn ontworpen om te voldoen aan de strenge eisen van de **Algemene Verordening Gegevensbescherming (AVG/GDPR)**.</p>
+        </header>
+
+        <section id="commitment-highlight" class="text-center mb-16">
+            <div class="commitment-box mx-auto shadow-md">
+                <span class="text-2xl mr-3">✅</span>
+                <span>Continue onafhankelijke toetsing en naleving van Europese privacywetgeving.</span>
+            </div>
+            <p class="text-sm text-gray-500 mt-3">Dit bevestigt onze toewijding aan veilige, betrouwbare systemen en bescherming van data.</p>
+        </section>
+
+        <main>
+            <section id="security-pillars" class="mb-20">
+                <h2 class="text-3xl font-bold text-center mb-10">De Fundamenten van Onze Security</h2>
+                
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    
+                    <div id="card-compliance" class="security-card bg-white p-6 rounded-lg border-2 border-transparent" data-target="content-compliance">
+                        <div class="flex items-center">
+                            <!-- SOC 2 Logo ingebed met Base64 (met lege data, zoals gevraagd om terug te keren naar de vorige status) -->
+                            <img src="" alt="SOC 2 Logo" class="soc2-logo mr-4">
+                            <h3 class="text-xl font-semibold">Compliance & Audit (SOC 2/AVG/ISO)</h3>
+                        </div>
+                    </div>
+
+                    <div id="card-data" class="security-card bg-white p-6 rounded-lg border-2 border-transparent" data-target="content-data">
+                        <div class="flex items-center">
+                            <div class="security-icon text-emerald-600 mr-4">🛡️</div>
+                            <h3 class="text-xl font-semibold">Gegevensbescherming</h3>
+                        </div>
+                    </div>
+                    
+                    <div id="card-infra" class="security-card bg-white p-6 rounded-lg border-2 border-transparent" data-target="content-infra">
+                        <div class="flex items-center">
+                           <div class="security-icon text-emerald-600 mr-4">☁️</div>
+                           <h3 class="text-xl font-semibold">Veilige Infrastructuur</h3>
+                        </div>
+                    </div>
+
+                    <div id="card-access" class="security-card bg-white p-6 rounded-lg border-2 border-transparent" data-target="content-access">
+                        <div class="flex items-center">
+                            <div class="security-icon text-emerald-600 mr-4">🔑</div>
+                            <h3 class="text-xl font-semibold">Toegangsbeheer</h3>
+                        </div>
+                    </div>
+
+                    <div id="card-monitoring" class="security-card bg-white p-6 rounded-lg border-2 border-transparent" data-target="content-monitoring">
+                         <div class="flex items-center">
+                            <div class="security-icon text-emerald-600 mr-4">📡</div>
+                            <h3 class="text-xl font-semibold">Continue Monitoring</h3>
+                        </div>
+                    </div>
+                    
+                    <div id="card-culture" class="security-card bg-white p-6 rounded-lg border-2 border-transparent" data-target="content-culture">
+                         <div class="flex items-center">
+                            <div class="security-icon text-emerald-600 mr-4">👥</div>
+                            <h3 class="text-xl font-semibold">Security Cultuur</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="content-container" class="mt-8 bg-white p-8 rounded-lg shadow-xl border-t-4 border-emerald-500">
+                    <div id="content-default" class="text-gray-600 text-center">
+                        <p>Klik op een van de bovenstaande onderwerpen voor een gedetailleerde uitleg over hoe wij de beveiliging waarborgen.</p>
+                    </div>
+
+                    <div id="content-compliance" class="content-section space-y-4">
+                        <h4 class="text-2xl font-bold mb-4 text-emerald-700">Compliance & Audit: AVG en ISO Standaarden</h4>
+                        <p>Ons Information Security Management System (ISMS) wordt continu onderhouden en is gericht op het volledig voldoen aan de **AVG (GDPR)**. Wij volgen de best practices van standaarden zoals **ISO 27001** om onze processen te borgen.</p>
+                         <p class="font-semibold mt-3">Belangrijkste auditprocessen:</p>
+                         <ul class="list-disc list-inside space-y-2 text-gray-700 ml-4">
+                            <li><strong>SOC 2 Type II Audits:</strong> Wij streven naar of ondergaan periodieke audits van een onafhankelijke accountant tegen de Service Organization Control (SOC 2) criteria. Dit is onze hoogste vorm van assurance over de effectiviteit van onze interne controls met betrekking tot beveiliging, beschikbaarheid en vertrouwelijkheid.</li>
+                            <li><strong>Penetratie Tests:</strong> Periodieke externe tests simuleren cyberaanvallen om kwetsbaarheden in onze applicaties en infrastructuur op te sporen.</li>
+                            <li><strong>Vulnerability Scanning:</strong> Continue geautomatiseerde scans identificeren potentiële beveiligingslekken in code en configuraties.</li>
+                            <li><strong>Privacy Impact Assessments (PIA):</strong> Nieuwe verwerkingen van persoonsgegevens worden vooraf getoetst op privacyrisico's, zoals vereist door de AVG.</li>
+                        </ul>
+                         <p class="mt-4">Bent u een (potentiële) klant en wilt u documentatie over onze security-audits inzien? U kunt dit aanvragen via onze juridische afdeling:</p>
+                        <a href="mailto:legal@lease-a-bike.nl?subject=Aanvraag%20Security%20Documentatie" class="inline-block text-emerald-600 font-semibold hover:underline">Vraag security documentatie hier aan (via e-mail)</a>
+                    </div>
+
+                    <div id="content-data" class="content-section space-y-4">
+                        <h4 class="text-2xl font-bold mb-4">Gegevensbescherming (AVG/GDPR)</h4>
+                        <p>De bescherming van persoonsgegevens is een kernvereiste binnen de AVG. Wij hanteren strikte procedures om ongewenste toegang, verlies of misbruik van data te voorkomen. Alle data in onze database is geanonimiseerd of gepseudonimiseerd waar mogelijk.</p>
+                        <p class="font-semibold mt-3">Technische maatregelen (Industriestandaarden):</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>Encryptie van Data in Transit:</strong> Alle communicatie tussen u en onze servers wordt beschermd door de nieuwste **TLS 1.3** protocollen.</li>
+                            <li><strong>Encryptie van Data At Rest:</strong> Opgeslagen data op schijven en in de database wordt versleuteld met **AES-256**, een industriestandaard voor veilige opslag.</li>
+                            <li><strong>Dataminimalisatie:</strong> Zodra gegevens niet meer nodig zijn voor het leaseproces, worden ze veilig en permanent verwijderd.</li>
+                        </ul>
+                    </div>
+                    <div id="content-infra" class="content-section space-y-4">
+                        <h4 class="text-2xl font-bold mb-4">Veilige Cloud Infrastructuur</h4>
+                        <p>Onze gehele technische omgeving is gehost bij een toonaangevende, wereldwijd erkende cloudprovider die beschikt over diverse relevante certificeringen (zoals ISO 27001). Dit waarborgt de beschikbaarheid van onze diensten en de fysieke beveiliging van de datacenters.</p>
+                        <p class="font-semibold mt-3">Beveiliging van het platform:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                           <li><strong>Netwerksegmentatie:</strong> Productieomgevingen zijn strikt gescheiden van ontwikkel- en testomgevingen, waardoor de impact van een incident beperkt blijft.</li>
+                           <li><strong>Web Application Firewall (WAF):</strong> Al het inkomende verkeer wordt gefilterd om veelvoorkomende webkwetsbaarheden (zoals SQL Injection en Cross-Site Scripting) te blokkeren.</li>
+                           <li><strong>Hersteldoelstellingen (RTO/RPO):</strong> We hanteren duidelijke Recovery Time Objective (RTO) en Recovery Point Objective (RPO) doelstellingen voor snel herstel na een verstoring.</li>
+                        </ul>
+                    </div>
+                     <div id="content-access" class="content-section space-y-4">
+                        <h4 class="text-2xl font-bold mb-4">Strikt Toegangsbeheer</h4>
+                        <p>Interne toegang tot systemen en data wordt strikt gecontroleerd. We passen het 'Need-to-Know' en 'Least Privilege' principe toe: alleen noodzakelijke toegang, en niet meer dan dat.</p>
+                        <p class="font-semibold mt-3">Beveiliging van toegangsgegevens:</p>
+                         <ul class="list-disc list-inside space-y-2 text-gray-700">
+                           <li><strong>Multi-Factor Authenticatie (MFA):</strong> Dit is verplicht voor alle medewerkers bij het inloggen op kritieke systemen.</li>
+                           <li><strong>Wachtwoordbeleid:</strong> Onze systemen forceren een robuust en regelmatig te vernieuwen wachtwoordbeleid, waarbij wachtwoorden veilig worden gehasht.</li>
+                           <li><strong>Toegangslogging:</strong> Alle toegang tot onze productieomgevingen wordt gelogd, gemonitord en periodiek geauditeerd.</li>
+                        </ul>
+                    </div>
+                    <div id="content-monitoring" class="content-section space-y-4">
+                        <h4 class="text-2xl font-bold mb-4">Continue Monitoring en Incident Response</h4>
+                        <p>Ons security-team monitort systemen **24/7**. Door middel van geavanceerde tooling detecteren we afwijkingen van het normale gedrag. Snelheid van detectie en reactie is cruciaal voor de beschikbaarheid en beveiliging van onze diensten.</p>
+                         <p class="font-semibold mt-3">Detectie en reactie:</p>
+                         <ul class="list-disc list-inside space-y-2 text-gray-700">
+                           <li><strong>Security Information and Event Management (SIEM):</strong> We gebruiken een gecentraliseerd SIEM-systeem om miljoenen logregels te analyseren en direct alarm te slaan bij verdachte patronen.</li>
+                           <li><strong>Automated Alerting:</strong> Kritieke beveiligingswaarschuwingen worden onmiddellijk geëscaleerd naar het incident response team.</li>
+                           <li><strong>Regelmatige Response Oefeningen:</strong> Het incident response plan wordt periodiek getest en geëvalueerd om de paraatheid van het team te garanderen.</li>
+                        </ul>
+                    </div>
+                    <div id="content-culture" class="content-section space-y-4">
+                        <h4 class="text-2xl font-bold mb-4">Security Bewustzijn en Cultuur</h4>
+                        <p>De mens is vaak de meest kwetsbare schakel. Daarom is investeren in onze medewerkers de beste beveiligingsmaatregel. Door een sterke security-cultuur te creëren, bouwen we een continue verdedigingslinie op.</p>
+                         <p class="font-semibold mt-3">Onderdeel van onze cultuur:</p>
+                         <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li><strong>Verplichte Trainingen:</strong> Alle nieuwe en bestaande medewerkers volgen verplichte, periodieke security- en privacytrainingen.</li>
+                            <li><strong>Gesimuleerde Phishing:</strong> Regelmatige, onverwachte phishing-simulaties testen het bewustzijn van medewerkers en identificeren trainingsbehoeften.</li>
+                            <li><strong>Clean Desk Policy:</strong> Strikte regels voor het opruimen van bureaus en het vergrendelen van schermen om ongewenste fysieke toegang tot informatie te voorkomen.</li>
+                         </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="responsible-disclosure" class="bg-emerald-50 rounded-lg p-8 md:p-12 mb-20 text-center border-t border-emerald-200">
+                <h2 class="text-3xl font-bold mb-4">Een kwetsbaarheid ontdekt?</h2>
+                <p class="text-gray-600 max-w-2xl mx-auto mb-6">Ons security-team waardeert de hulp van security-onderzoekers. Als u een kwetsbaarheid in onze systemen heeft gevonden, meld dit dan via ons Responsible Disclosure programma.</p>
+                <a href="mailto:security@lease-a-bike.nl?subject=Responsible%20Disclosure" class="inline-block btn-primary font-bold py-3 px-8 rounded-lg text-lg hover:shadow-lg">Meld een kwetsbaarheid</a>
+            </section>
+            
+            <section id="user-tips" class="mb-20">
+                <h2 class="text-3xl font-bold text-center mb-10">Uw Rol in Veiligheid</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    
+                    <!-- Tip 1: Sterke Wachtwoorden -->
+                    <div id="tip-1" class="interactive-tip bg-white p-6 rounded-lg shadow-md border-t-2 border-emerald-400" tabindex="0">
+                        <div class="tooltip-content" id="tooltip-1">
+                            **De Details:** Gebruik minstens 12 karakters, inclusief hoofdletters, kleine letters, cijfers en symbolen. Verander het wachtwoord direct als u denkt dat het gecompromiteerd is.
+                        </div>
+                        <div class="text-4xl mb-3">🔒</div>
+                        <h4 class="font-semibold text-lg mb-2">Sterke Wachtwoorden</h4>
+                        <p class="text-gray-600 text-sm">Gebruik een uniek wachtwoord en overweeg een wachtwoordmanager. Hoe langer, hoe beter!</p>
+                    </div>
+
+                    <!-- Tip 2: Phishing Herkennen -->
+                    <div id="tip-2" class="interactive-tip bg-white p-6 rounded-lg shadow-md border-t-2 border-emerald-400" tabindex="0">
+                        <div class="tooltip-content" id="tooltip-2">
+                            **De Details:** Let op spelfouten, vage aanhef ("Geachte klant"), en onverwachte bijlagen. Klik nooit op links als u de afzender niet volledig vertrouwt.
+                        </div>
+                        <div class="text-4xl mb-3">🎣</div>
+                        <h4 class="font-semibold text-lg mb-2">Phishing Herkennen</h4>
+                        <p class="text-gray-600 text-sm">Controleer altijd het afzenderadres van e-mails die om persoonlijke of inloggegevens vragen.</p>
+                    </div>
+
+                    <!-- Tip 3: Houd Software Up-to-date -->
+                    <div id="tip-3" class="interactive-tip bg-white p-6 rounded-lg shadow-md border-t-2 border-emerald-400" tabindex="0">
+                        <div class="tooltip-content" id="tooltip-3">
+                            **De Details:** Stel automatische updates in voor uw telefoon, browser en besturingssysteem. Veel aanvallen maken gebruik van reeds bekende (maar ongepatchte) kwetsbaarheden.
+                        </div>
+                        <div class="text-4xl mb-3">📱</div>
+                        <h4 class="font-semibold text-lg mb-2">Houd Software Up-to-date</h4>
+                        <p class="text-gray-600 text-sm">Installeer direct de laatste updates van uw besturingssystemen en apps om bekende lekken te dichten.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="faq" class="mb-20">
+                <h2 class="text-3xl font-bold text-center mb-10">Veelgestelde Vragen over Security & Privacy</h2>
+                <div class="max-w-4xl mx-auto bg-white rounded-lg shadow-lg divide-y divide-gray-200">
+                    
+                    <!-- Categorie 1: Veelgestelde vragen Privacy -->
+                    <h3 class="bg-gray-100 p-4 font-bold text-xl text-gray-800 rounded-t-lg">Veelgestelde vragen Privacy</h3>
+                    
+                    <!-- Vraag 1 -->
+                    <div class="faq-item">
+                        <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-priv-1">
+                            <span>Hoe zorgt Lease a Bike ervoor dat onze fietsleaseprocessen privacy-compliant blijven?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-priv-1" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Wij zorgen voor compliance door het hanteren van een Privacy by Design-aanpak bij alle nieuwe functies. Dit omvat periodieke **Privacy Impact Assessments (PIA's)**, het opleggen van dataminimalisatie en het garanderen dat onze processen en systemen continu de strenge **AVG (GDPR)**-eisen naleven.</p>
+                        </div>
+                    </div>
+
+                    <!-- Vraag 2 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-priv-2">
+                            <span>Moet ik als werkgever een verwerkersovereenkomst afsluiten met Lease a Bike?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-priv-2" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Dit hangt af van de juridische relatie. In de meeste gevallen fungeert Lease a Bike als een onafhankelijke verwerkingsverantwoordelijke voor de uitvoering van de lease. Als Lease a Bike in uitzonderlijke gevallen gegevens verwerkt op strikte instructie van de werkgever, kan een verwerkersovereenkomst vereist zijn. Dit wordt contractueel vastgelegd.</p>
+                        </div>
+                    </div>
+
+                    <!-- Vraag 3 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-priv-3">
+                            <span>Wat is de juridische verklaring voor de relatie "verwerkingsverantwoordelijke-verwerkingsverantwoordelijke"?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-priv-3" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>De werkgever is verwerkingsverantwoordelijke voor de gegevens in het kader van het aanbieden van de lease. Lease a Bike is verwerkingsverantwoordelijke voor de gegevens in het kader van het uitvoeren van de leaseovereenkomst (zoals betalingen en levering). Beiden bepalen onafhankelijk de doelen en middelen voor hun specifieke taken.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Vraag 4 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-priv-4">
+                            <span>Kunnen wij aan het einde van de samenwerking alle gegevens van jouw werknemers aan jou als werkgever overdragen?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-priv-4" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Nee, na beëindiging van de samenwerking wordt de data van werknemers geanonimiseerd of veilig verwijderd volgens ons retentiebeleid, tenzij wettelijke verplichtingen (zoals fiscale bewaarplicht) anders vereisen. Het overdragen van alle gegevens is in strijd met het principe van **dataminimalisatie**.</p>
+                        </div>
+                    </div>
+
+                    <!-- Vraag 5 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-priv-5">
+                            <span>Mijn sector is gereguleerd (banken, zorg, overheid). Moet het fietsleaseproces ook voldoen aan die sectorspecifieke regelgeving?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-priv-5" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Nee, het fietsleaseproces zelf valt onder de algemene AVG en niet onder sectorspecifieke wetgeving (zoals Wft of NEN 7510). Lease a Bike zorgt voor compliance met de AVG. De werkgever blijft verantwoordelijk voor de naleving van zijn sectorspecifieke regelgeving ten aanzien van de selectie en de samenwerking met leveranciers.</p>
+                        </div>
+                    </div>
+
+                    <!-- Categorie 2: Veelgestelde vragen over Algemene Veiligheid -->
+                    <h3 class="bg-gray-100 p-4 font-bold text-xl text-gray-800 mt-8 border-t border-gray-200">Veelgestelde vragen over Algemene Veiligheid</h3>
+
+                    <!-- Vraag 1 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-sec-1">
+                            <span>Wat zijn de beveiligingsmaatregelen rondom de betaalinformatie?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-sec-1" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Wij verwerken geen gevoelige betaalinformatie (zoals volledige creditcardnummers) direct op ons platform. Wij werken samen met **PCI DSS-gecertificeerde** betalingsverwerkers. Dit betekent dat de financiële gegevens versleuteld en beveiligd worden volgens de hoogste standaarden van de betaalindustrie.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Vraag 2 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-sec-2">
+                            <span>Hoe kan ik voorkomen dat mijn Lease a Bike account wordt gehackt?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-sec-2" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Gebruik een uniek en sterk wachtwoord (minimaal 12 tekens) en schakel altijd **Multi-Factor Authenticatie (MFA)** in als deze optie beschikbaar is. Klik niet op verdachte links in e-mails en houd uw besturingssysteem up-to-date. (Zie ook de sectie 'Uw Rol in Veiligheid' voor meer tips.)</p>
+                        </div>
+                    </div>
+
+
+                    <!-- Categorie 3: Veelgestelde vragen Assurance en SOC 2 -->
+                    <h3 class="bg-gray-100 p-4 font-bold text-xl text-gray-800 mt-8 border-t border-gray-200">Veelgestelde vragen Assurance en SOC 2 ®</h3>
+                    
+                    <!-- Vraag 1 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-soc-1">
+                            <span>Wat betekenen assurance en SOC 2 ®?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-soc-1" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>**Assurance** is de mate van vertrouwen die een onafhankelijke auditor geeft aan de kwaliteit van onze interne controles. **SOC 2** (Service Organization Control 2) is een auditstandaard van het AICPA die de effectiviteit van deze controles toetst tegen de Trust Services Criteria (Beveiliging, Beschikbaarheid, Vertrouwelijkheid, Integriteit en Privacy).</p>
+                        </div>
+                    </div>
+
+                    <!-- Vraag 2 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-soc-2">
+                            <span>Wat is het verschil tussen type 1 en type 2 SOC 2 rapporten?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-soc-2" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>**Type 1** rapporten bevestigen dat de opzet van onze interne controles op een bepaald moment adequaat is. **Type 2** rapporten gaan verder: ze bevestigen dat de controles niet alleen adequaat zijn opgezet, maar ook **effectief hebben gefunctioneerd** over een periode van minimaal zes maanden. Type 2 biedt de hoogste mate van zekerheid.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Vraag 3 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-soc-3">
+                            <span>Waarom is de toegevoegde waarde van ons SOC 2 rapport aanzienlijk groter dan ISO27k?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-soc-3" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Een ISO 27001-certificaat toont aan dat een managementsysteem bestaat. Het **SOC 2 Type 2** rapport toont door middel van testresultaten van een onafhankelijke auditor aan dat dit managementsysteem **daadwerkelijk effectief** is en goed werkt over tijd. Dit biedt een gedetailleerdere en praktischere garantie.</p>
+                        </div>
+                    </div>
+
+                    <!-- Vraag 4 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-soc-4">
+                            <span>Hoe kan ik het SOC 2 rapport verkrijgen?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-soc-4" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Vanwege de vertrouwelijkheid en de gedetailleerde aard van het rapport, wordt het niet openbaar gedeeld. U kunt een aanvraag indienen door contact op te nemen met onze juridische afdeling via de link in de sectie 'Compliance & Audit', of door een mail te sturen naar legal@lease-a-bike.nl. Toegang wordt verleend na ondertekening van een Non-Disclosure Agreement (NDA).</p>
+                        </div>
+                    </div>
+
+                    <!-- Vraag 5 -->
+                    <div class="faq-item">
+                         <div class="faq-question flex justify-between items-center p-5 font-semibold text-lg text-gray-900" data-target="answer-soc-5">
+                            <span>Het SOC 2 rapport is in het Engels. Bestaat er ook een Nederlandse vertaling?</span>
+                            <span class="faq-icon text-emerald-600 text-xl">+</span>
+                        </div>
+                        <div id="answer-soc-5" class="faq-answer p-5 pt-0 text-gray-700 border-t border-gray-100">
+                            <p>Nee, het officiële SOC 2 rapport wordt uitgegeven door de onafhankelijke accountant en is opgesteld volgens internationale standaarden (AICPA), doorgaans in het Engels. Dit is de taal van het assurance-document voor wereldwijde geldigheid. Wij bieden momenteel geen officiële Nederlandse vertaling.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer class="text-center mt-20 pt-10 border-t border-gray-200">
+             <p class="text-gray-500">Heeft u vragen die hier niet beantwoord zijn? Neem dan contact met ons op via <a href="mailto:security@lease-a-bike.nl" class="text-emerald-600 hover:underline">security@lease-a-bike.nl</a>.</p>
+             <p class="text-gray-500 mt-2">&copy; <span id="current-year"></span> Lease a Bike. Alle rechten voorbehouden.</p>
+             <p class="text-xs text-gray-400 mt-1">Sami Oumghar</p>
+        </footer>
+
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const cards = document.querySelectorAll('.security-card');
+            const contentSections = document.querySelectorAll('.content-section');
+            const defaultContent = document.getElementById('content-default');
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            const interactiveTips = document.querySelectorAll('.interactive-tip');
+
+            let activeCard = null;
+            let activeContent = null;
+            
+            function toggleContent(targetContent, targetCard) {
+                if (activeCard === targetCard) {
+                    targetCard.classList.remove('active');
+                    if(activeContent) activeContent.classList.remove('show');
+                    activeCard = null;
+                    activeContent = null;
+                    defaultContent.style.display = 'block';
+                } else {
+                    if (activeCard) {
+                        activeCard.classList.remove('active');
+                        activeContent.classList.remove('show');
+                    }
+                    
+                    targetCard.classList.add('active');
+                    targetContent.classList.add('show');
+                    
+                    defaultContent.style.display = 'none';
+
+                    activeCard = targetCard;
+                    activeContent = targetContent;
+                }
+            }
+            
+            cards.forEach(card => {
+                card.addEventListener('click', function () {
+                    const targetId = this.dataset.target;
+                    const targetContent = document.getElementById(targetId);
+                    toggleContent(targetContent, this);
+                });
+            });
+
+            faqQuestions.forEach(question => {
+                const icon = question.querySelector('.faq-icon');
+                question.addEventListener('click', function() {
+                    const targetId = this.dataset.target;
+                    const answer = document.getElementById(targetId);
+
+                    if (answer.classList.contains('show')) {
+                        answer.classList.remove('show');
+                        icon.textContent = '+';
+                    } else {
+                        // Sluit alle andere antwoorden
+                        document.querySelectorAll('.faq-answer.show').forEach(openAnswer => {
+                            openAnswer.classList.remove('show');
+                            const relatedIcon = openAnswer.previousElementSibling.parentElement.querySelector('.faq-icon');
+                            if (relatedIcon) relatedIcon.textContent = '+';
+                        });
+
+                        // Open huidig antwoord
+                        answer.classList.add('show');
+                        icon.textContent = '–';
+                    }
+                });
+            });
+
+            // Logica voor de interactieve tips (Muis/Touch)
+            interactiveTips.forEach(tip => {
+                // Toon tooltip bij focus (voor touch en toegankelijkheid)
+                tip.addEventListener('focus', function() {
+                    this.classList.add('focused');
+                }, true); 
+                
+                // Verberg tooltip bij blur (voor touch en toegankelijkheid)
+                tip.addEventListener('blur', function() {
+                    this.classList.remove('focused');
+                }, true);
+
+                // Voor touch apparaten: klik toont/verbergt de tooltip, sluit anderen.
+                tip.addEventListener('click', function(event) {
+                    event.stopPropagation();
+                    
+                    const isFocused = this.classList.contains('focused');
+                    
+                    // Sluit alle andere tips
+                    interactiveTips.forEach(otherTip => {
+                        if (otherTip !== this) {
+                            otherTip.classList.remove('focused');
+                        }
+                    });
+
+                    // Toggle de huidige tip
+                    if (!isFocused) {
+                        this.classList.add('focused');
+                    } else {
+                        this.classList.remove('focused');
+                    }
+                });
+            });
+
+            // Sluit tooltips wanneer de gebruiker ergens anders op de pagina klikt
+            document.body.addEventListener('click', function() {
+                 interactiveTips.forEach(tip => {
+                    tip.classList.remove('focused');
+                });
+            });
+
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+        });
+    </script>
+</body>
+</html>
