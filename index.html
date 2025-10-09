@@ -1,1076 +1,626 @@
 <!DOCTYPE html>
-<html lang="nl">
+<html lang="nl" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lease a Bike - Trust Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Chosen Palette: High-Trust Minimalist (Wit, Deep Gray, Accent Emerald) -->
-    <!-- Application Structure Plan: De 4 Fundamenten zijn nu statische QUICK-LINKS. De gedetailleerde secties eronder zijn omgevormd tot inklapbare accordeons om de totale leestijd te minimaliseren en de pagina kort te houden. -->
-    <!-- Visualization & Content Choices: Badges zijn vervangen door gestandaardiseerde tekstblokken. Library/Method: HTML/Tailwind, Vanilla JS. -->
-    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* BASE STYLING (Minimalist) */
+        :root {
+            --brand-emerald: #059669;
+            --brand-emerald-dark: #047857;
+            --text-primary: #1f2937;
+            --text-secondary: #4b5563;
+            --bg-light: #f7f9fc;
+            --bg-white: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #ffffff; /* Wit als basis */
-            padding-top: 64px; 
-            color: #1f2937; /* Donkergrijs voor tekst */
+            background-color: var(--bg-white);
+            color: var(--text-primary);
         }
         
-        /* HEADER STYLING */
-        .main-header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 50;
-            background-color: #ffffff;
-            border-bottom: 1px solid #e5e7eb; /* Strakke scheidingslijn */
-        }
-        
-        /* COMMITMENT HIGHLIGHT (Strakke pil) */
-        .commitment-box {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.5rem 1.5rem;
-            background-color: #ecfdf5; /* Zeer lichte groene tint */
-            border: 1px solid #a7f3d0;
-            border-radius: 9999px; 
-            font-size: 1rem;
-            font-weight: 600;
-            color: #059669; /* Accentkleur */
-        }
-        
-        /* FUNDAMENTEN CARDS (Quick Links) */
-        .security-card {
+        /* Sticky Nav Styling */
+        .sticky-nav {
             transition: all 0.3s ease-in-out;
-            border-radius: 0.5rem;
-            background-color: #ffffff;
-            border: 1px solid #e5e7eb; /* Zachte rand */
-            display: flex;
-            flex-direction: column;
-            height: 100%;
         }
-        .security-card:hover {
-            border-color: #10b981; /* Accent op hover */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-        }
-
-        .card-header-icon {
-            font-size: 2.25rem; /* Grote iconen */
-            margin-right: 0.5rem;
-        }
-        
-        /* DETAIL ACCORDEON STYLING */
-        .detail-accordeon-header {
-            cursor: pointer;
-            transition: background-color 0.15s;
-            padding: 1rem;
-            border-radius: 0.5rem;
-            font-weight: 700;
-            background-color: #f8f9fa;
-            border: 1px solid #e5e7eb;
-        }
-        .detail-accordeon-header:hover {
-            background-color: #f3f4f6;
+        .sticky-nav.stuck {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background-color: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--border-color);
         }
 
-        /* Specifieke styling voor de hoofd-accordeon headers */
-        .detail-accordeon-header-main {
-            cursor: pointer;
-            transition: background-color 0.15s;
-            padding: 1.25rem 1.5rem; /* Iets groter dan sub-headers */
-            border-radius: 0.5rem;
-            font-weight: 700;
-            color: #ffffff; /* Witte tekst voor contrasterende achtergrond */
-            margin-bottom: 0.5rem; /* Ruimte tussen hoofdheaders */
+        .sticky-nav .nav-link {
+            padding: 1.25rem 0.5rem;
+            margin: 0 1rem;
+            font-weight: 700; /* Dikkedrukt */
+            font-size: 1.125rem; /* Groter lettertype */
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
         }
-        .detail-accordeon-header-main:hover {
-            opacity: 0.9; /* Lichte hover-effect */
-        }
-
-        /* Kleuren voor de hoofd-accordeon headers */
-        .detail-accordeon-header-main.color-green {
-            background-color: #047857; /* Donkergroen */
-        }
-        .detail-accordeon-header-main.color-blue-purple {
-            background-color: #4c1d95; /* Donkerblauw richting paars */
-            color: white; /* Wit voor contrast */
-        }
-        .detail-accordeon-header-main.color-baby-blue {
-            background-color: #3b82f6; /* Helder Lichtblauw (Tailwind blue-500) */
-            color: #ffffff; /* Witte tekst voor goed contrast */
-        }
-        
-        /* LICHTGROENE KLEUR (Voor controle/privacy) */
-        .detail-accordeon-header-main.color-light-green {
-            background-color: #A7F3D0; /* Lichtgroen/Mint */
-            color: #047857; /* Donkergroene tekst voor contrast */
-        }
-        .detail-accordeon-header-main.color-light-green .toggle-icon {
-             color: #047857; /* Donkergroen voor contrast */
-        }
-        
-        /* Icon kleur aanpassen voor de babyblauwe header */
-        .detail-accordeon-header-main.color-baby-blue .toggle-icon {
-            color: #ffffff; /* Wit voor contrast */
-        }
-
-
-        .detail-accordeon-content, .detail-accordeon-content-main {
-            display: none;
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.6s ease-in-out;
-            border: 1px solid #e5e7eb;
-            border-top: none;
-            border-radius: 0 0 0.5rem 0.5rem;
-            padding: 0 2rem; 
-            margin-bottom: 1rem; /* Ruimte na gesloten content */
-        }
-        .detail-accordeon-content.open, .detail-accordeon-content-main.open {
-            display: block;
-            max-height: 2000px; 
-            padding: 2rem;
-            margin-bottom: 1rem;
-        }
-        
-        /* TRUST BAR LOGO STYLING (Tekstueel) */
-        .trust-badge-placeholder {
-            width: 100px;
-            height: 100px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 0.5rem;
-            font-size: 10px;
-            padding: 10px;
-            text-transform: uppercase;
-            font-weight: 700;
-            line-height: 1.1;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-
-        .soc2-placeholder {
-            background-color: #0060A9; /* AICPA Blauw */
-            color: white;
-            border: 1px solid #0060A9;
-        }
-        
-        .iso27k-placeholder {
-            background-color: #1f2937; /* ISO Standaard Grijs */
-            color: white;
-            border: 1px solid #1f2937;
-        }
-
-        .iso9k-placeholder {
-            background-color: #059669; /* Kwaliteits Groen */
-            color: white;
-            border: 1px solid #059669;
-        }
-        
-        /* UW ROL DETAILS (Verborgen) */
-        .details-hidden {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-in-out;
-            padding: 0 0.5rem;
-            margin-top: 0.75rem;
-        }
-        .details-hidden.visible {
-            max-height: 500px; /* Voldoende ruimte om te tonen */
-            padding: 0.75rem 0.5rem;
-        }
-        .details-button {
-            transition: transform 0.3s;
-        }
-        
-        /* Styling voor de Lees Meer knop */
-        .cta-button {
-            background-color: #059669; /* Emerald 600 */
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            font-weight: 600;
-            font-size: 0.875rem; /* Kleinere knop */
-            transition: background-color 0.3s;
-            display: inline-flex;
-            align-items: center;
-        }
-        .cta-button:hover {
-            background-color: #047857; /* Emerald 700 */
-        }
-
-        /* FAQ Styling */
-        .faq-answer {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.5s ease-out, padding 0.5s ease-out;
-            padding-top: 0;
-            padding-bottom: 0;
-        }
-        .faq-answer.show {
-            max-height: 500px; /* Genoeg ruimte voor antwoord */
-            padding-top: 0.75rem;
-            padding-bottom: 0.75rem;
-        }
-        .faq-question {
-            cursor: pointer;
-            background-color: #ffffff; /* Zorgt dat de vraag zelf een witte achtergrond heeft */
-        }
-        .faq-question:hover {
-            background-color: #f8f9fa;
-        }
-        
-        /* PARTNER MARQUEE STYLING */
-        .partner-list-container {
-            overflow-x: auto; /* Maakt horizontaal scrollen mogelijk */
-            white-space: nowrap; /* Zorgt dat de items op één rij blijven */
-            -webkit-overflow-scrolling: touch; /* Vloeiend scrollen op iOS */
-            scrollbar-width: none; /* Verbergt scrollbar in Firefox */
-            -ms-overflow-style: none;  /* Verbergt scrollbar in IE and Edge */
-            border-radius: 0.5rem;
-        }
-        .partner-list-container::-webkit-scrollbar {
-            display: none; /* Verbergt scrollbar in Chrome/Safari */
-        }
-        .partner-item-bordered {
-            display: inline-block;
-            margin-right: 3rem; /* Ruimte tussen merken */
-            font-weight: 700;
-            font-size: 2.25rem; /* **AANPASSING: Grotere Font Size** */
-            line-height: 2.5rem; /* **AANPASSING: Lijnhoogte voor leesbaarheid** */
-            color: #4b5563; 
-            transition: color 0.3s;
-            padding: 0.5rem 1rem; 
-            border-radius: 0.25rem; 
-            border: 1px solid #1f2937; /* Dunne zwarte rand */
-            text-decoration: none; 
-            box-sizing: border-box; /* Zorgt dat padding en border binnen de afmetingen vallen */
-        }
-        .partner-item-bordered:hover {
-            opacity: 0.8; 
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        /* Specifieke kleuren voor partners */
-        .color-ing { color: #FF6200; }
-        .color-rituals { color: #71271D; }
-        .color-abnamro { color: #00693E; } /* Donkerder groen */
-        .color-boels { color: #FF8200; }
-        .color-breman { color: #005090; }
-        .color-hso { color: #5F3DFF; }
-        .color-kpn { color: #6B4796; }
-        .color-auping { color: #00A597; }
-
-
-        /* Responsive Grid (4 kolommen op desktop) */
-        @media (min-width: 1024px) {
-            #security-pillars .grid {
-                grid-template-columns: repeat(4, minmax(0, 1fr));
+        @media (min-width: 768px) {
+            .sticky-nav .nav-link {
+                padding: 1.25rem 1rem;
             }
         }
+
+        .sticky-nav .nav-link:hover {
+            color: var(--brand-emerald);
+        }
+
+        .sticky-nav .nav-link.active {
+            color: var(--brand-emerald);
+            border-bottom-color: var(--brand-emerald);
+        }
+
+        /* Content Sections */
+        .content-section {
+            padding-top: 6rem;
+        }
+        
+        /* Compliance Section styling */
+        .compliance-card {
+             background-color: var(--bg-white);
+             border-radius: 0.75rem;
+             padding: 2rem;
+             border: 1px solid var(--border-color);
+             display: flex;
+             flex-direction: column;
+             text-align: center;
+        }
+        
+        /* Video placeholder */
+        .video-placeholder {
+            position: relative;
+            cursor: pointer;
+            border-radius: 1rem;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            border: 1px solid var(--border-color);
+        }
+        .video-placeholder .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255,255,255,0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+        .video-placeholder:hover .play-button {
+            transform: translate(-50%, -50%) scale(1.1);
+            background-color: rgba(255,255,255,1);
+        }
+        .video-placeholder .play-button svg {
+            color: var(--brand-emerald);
+            width: 40px;
+            height: 40px;
+        }
+        
+        .accordion-trigger {
+             background: none; color: inherit; border: none; padding: 0; font: inherit; cursor: pointer; outline: inherit; width: 100%; text-align: left;
+             display: flex; justify-content: space-between; align-items: center;
+        }
+        .accordion-content {
+            display: grid;
+            grid-template-rows: 0fr;
+            transition: grid-template-rows 0.4s ease-out;
+        }
+        .accordion-content > div {
+            min-height: 0;
+            overflow: hidden;
+        }
+        .accordion-content[data-state="open"] {
+            grid-template-rows: 1fr;
+        }
+        .accordion-trigger .toggle-icon {
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+        .accordion-trigger[aria-expanded="true"] .toggle-icon {
+            transform: rotate(45deg);
+        }
+
+        /* Partner Logo Styling */
+        .partner-logo {
+          display: inline-block;
+          font-weight: 700;
+          font-size: 1.5rem; /* Groter lettertype */
+          padding: 0.5rem 1.5rem;
+          border: 2px solid currentColor; /* Omlijsting in de tekstkleur */
+          border-radius: 0.5rem;
+          text-decoration: none;
+          white-space: nowrap; /* Zorgt dat namen niet afbreken */
+        }
+        .color-ing { color: #FF6200; }
+        .color-rituals { color: #71271D; }
+        .color-abnamro { color: #00693E; }
+        .color-boels { color: #FF8200; }
+        .color-kpn { color: #00A388; } /* KPN Groen */
+
+        /* Marquee Animation */
+        @keyframes marquee {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); } /* Translate by half the width of the duplicated content */
+        }
+
+        .marquee-container {
+          overflow: hidden;
+          position: relative;
+          width: 100%;
+          -webkit-mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+          mask-image: linear-gradient(to right, transparent, black 20%, black 80%, transparent);
+        }
+
+        .marquee-content {
+          display: flex;
+          align-items: center;
+          width: fit-content;
+          animation: marquee 40s linear infinite;
+          will-change: transform;
+        }
+
+        .marquee-content:hover {
+          animation-play-state: paused;
+        }
+
+        .marquee-content > a {
+            flex-shrink: 0;
+            margin: 0 1.5rem;
+        }
+        
     </style>
 </head>
-<body class="text-gray-800">
+<body class="antialiased">
 
-    <!-- FIXED NAVIGATION HEADER -->
-    <header class="main-header">
-        <nav class="container mx-auto px-4 sm:px-6 lg:px-8 py-3 flex justify-between items-center">
+    <header class="sticky top-0 z-50 bg-white/80 backdrop-blur-lg border-b border-gray-200">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="#" class="flex items-center space-x-2 text-2xl font-extrabold text-gray-900">
-                <span class="text-3xl text-emerald-600">🚲</span>
+                <span class="text-3xl">🚲</span>
                 <span>Lease a Bike</span>
             </a>
-            <div class="flex space-x-6 text-base font-medium">
-                <a href="#werkgever" class="text-gray-600 hover:text-emerald-600 transition duration-150">Werkgever</a>
-                <a href="#werknemer" class="text-gray-600 hover:text-emerald-600 transition duration-150">Werknemer</a>
-                <a href="#zelfstandige" class="text-gray-600 hover:text-emerald-600 transition duration-150 hidden md:inline">Zelfstandige</a>
-                <a href="#fietsen" class="text-gray-600 hover:text-emerald-600 transition duration-150 hidden sm:inline">Fietsen</a>
-                <a href="#contact" class="text-gray-600 hover:text-emerald-600 transition duration-150">Contact</a>
+            <div class="hidden md:flex items-center">
+                <div class="flex items-center space-x-6 text-base font-medium">
+                    <a href="#" class="text-gray-600 hover:text-emerald-600 transition duration-150">Werkgever</a>
+                    <a href="#" class="text-gray-600 hover:text-emerald-600 transition duration-150">Werknemer</a>
+                    <a href="#" class="text-gray-600 hover:text-emerald-600 transition duration-150 hidden lg:inline">Zelfstandige</a>
+                    <a href="#" class="text-gray-600 hover:text-emerald-600 transition duration-150 hidden lg:inline">Fietsen</a>
+                    <a href="#" class="text-gray-600 hover:text-emerald-600 transition duration-150">Contact</a>
+                </div>
+                 <a href="#" class="bg-emerald-600 text-white font-semibold px-5 py-2 rounded-full hover:bg-emerald-700 transition duration-300 ml-6">Portaal Login</a>
             </div>
         </nav>
     </header>
-    <!-- END FIXED NAVIGATION HEADER -->
+    
+    <main class="container mx-auto px-6">
 
-    <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
-
-        <header class="text-center mb-16">
-            <!-- TITEL EN SUBTITEL (Hoger Contrast, Meer Witruimte) -->
-            <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight">Lease a Bike Trust Center</h1>
-            <p class="mt-6 text-lead max-w-4xl mx-auto">
-                Uw gegevens, onze hoogste prioriteit. Wij bieden transparante en bewezen zekerheid, verankerd in de strengste compliance standaarden voor een zorgeloze lease-ervaring.
+        <!-- HERO SECTIE -->
+        <section id="hero" class="text-center py-20 md:py-28">
+            <h1 class="text-5xl md:text-6xl font-extrabold text-gray-900 tracking-tight leading-tight max-w-4xl mx-auto">Gemaakt met Vertrouwen in de Kern</h1>
+            <p class="mt-6 text-lg max-w-3xl mx-auto text-gray-600">
+                Ontdek hoe ons toonaangevende platform voor fietsleasing is gebouwd op een fundament van robuuste security, onwrikbare privacy en geverifieerde compliance.
             </p>
-        </header>
-
-        <!-- HIGHLIGHT: Commitment Box (Minimalistisch & Strak) -->
-        <section id="commitment-highlight" class="text-center mb-20">
-            <div class="commitment-box mx-auto">
-                <span class="text-lg mr-2">🔒</span>
-                <span>Al onze security- en privacymaatregelen zijn onafhankelijk getoetst en bewezen effectief.</span>
+            <div class="mt-12 max-w-4xl mx-auto">
+                <div class="video-placeholder">
+                     <img src="https://placehold.co/1200x675/e2e8f0/1f2937?text=🚲+Lease+a+Bike" alt="Lease a Bike Trust Center Video" class="w-full">
+                     <div class="play-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-play"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                     </div>
+                </div>
+            </div>
+            <div class="mt-20">
+                 <p class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-8">Vertrouwd door toonaangevende organisaties</p>
+                 <div class="marquee-container">
+                     <div class="marquee-content">
+                        <!-- Original Set -->
+                        <a href="#" class="partner-logo color-ing">ING</a>
+                        <a href="#" class="partner-logo color-rituals">Rituals</a>
+                        <a href="#" class="partner-logo color-abnamro">ABN AMRO</a>
+                        <a href="#" class="partner-logo color-kpn">KPN</a>
+                        <a href="#" class="partner-logo color-boels">Boels</a>
+                        <!-- Duplicated Set for seamless loop -->
+                        <a href="#" class="partner-logo color-ing">ING</a>
+                        <a href="#" class="partner-logo color-rituals">Rituals</a>
+                        <a href="#" class="partner-logo color-abnamro">ABN AMRO</a>
+                        <a href="#" class="partner-logo color-kpn">KPN</a>
+                        <a href="#" class="partner-logo color-boels">Boels</a>
+                     </div>
+                 </div>
             </div>
         </section>
 
-        <main>
-            <!-- SECTION 1: OVERZICHTSKAARTEN (Ankerpunten naar inklapbare content) -->
-            <section id="security-pillars" class="mb-20">
-                <h2 class="text-4xl font-extrabold text-[#1f2937] text-center mb-12">De Fundamenten van Onze Security</h2>
+        <!-- STICKY NAV -->
+        <div id="sticky-nav-wrapper" class="sticky-nav">
+             <nav class="container mx-auto flex justify-center overflow-x-auto">
+                <a href="#security" class="nav-link nav-link-security active">Security</a>
+                <a href="#privacy" class="nav-link nav-link-privacy">Privacy</a>
+                <a href="#compliance" class="nav-link nav-link-compliance">Compliance</a>
+                <a href="#reliability" class="nav-link nav-link-reliability">Betrouwbaarheid</a>
+                <a href="#faq" class="nav-link nav-link-faq">FAQ</a>
+            </nav>
+        </div>
+       
+        <!-- CONTENT SECTIONS WRAPPER -->
+        <div class="pt-16 pb-20 space-y-24">
+
+             <!-- Security Sectie -->
+            <section id="security" class="content-section">
+                 <div class="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
+                    <div class="md:order-last">
+                        <h2 class="text-4xl font-extrabold text-gray-900">Security</h2>
+                        <p class="mt-4 text-lg text-gray-600">Onze digitale vesting is gebouwd met gelaagde, proactieve verdedigingsmechanismen om uw gegevens te beschermen.</p>
+                        <ul class="mt-8 space-y-4 text-gray-600">
+                            <li class="flex items-start"><i data-lucide="key-round" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Toegangsbeheer:</strong> Toegang op basis van 'least privilege', versterkt met Multi-Factor Authenticatie (MFA).</span></li>
+                            <li class="flex items-start"><i data-lucide="shield-check" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Continue Monitoring:</strong> 24/7 monitoring en jaarlijkse onafhankelijke penetratietests.</span></li>
+                            <li class="flex items-start"><i data-lucide="lock" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Data Encryptie:</strong> Alle data versleuteld 'in-transit' (TLS 1.2+) en 'at-rest' (AES-256).</span></li>
+                        </ul>
+                    </div>
+                    <div class="rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/600x450/dbeafe/1e3a8a?text=Digitale+Vesting" alt="Abstracte visualisatie van digitale beveiliging" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </section>
+            
+             <!-- Privacy Sectie -->
+            <section id="privacy" class="content-section">
+                 <div class="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
+                    <div class="rounded-lg overflow-hidden md:order-last">
+                        <img src="https://placehold.co/600x450/d1fae5/065f46?text=Privacy+by+Design" alt="Abstracte visualisatie van privacy en databescherming" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h2 class="text-4xl font-extrabold text-gray-900">Privacy</h2>
+                        <p class="mt-4 text-lg text-gray-600">Privacy by Design is onze norm. We verwerken uw data volgens de strengste AVG-richtlijnen.</p>
+                         <ul class="mt-8 space-y-4 text-gray-600">
+                            <li class="flex items-start"><i data-lucide="file-text" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Transparantie & Controle:</strong> Volledig inzicht via onze continu getoetste privacy documentatie.</span></li>
+                            <li class="flex items-start"><i data-lucide="minimize-2" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Dataminimalisatie:</strong> We verzamelen alleen de gegevens die absoluut noodzakelijk zijn voor onze service.</span></li>
+                            <li class="flex items-start"><i data-lucide="archive-restore" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Data Retentie:</strong> Gegevens worden niet langer bewaard dan wettelijk vereist en proactief verwijderd.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Compliance Sectie -->
+            <section id="compliance" class="content-section">
+                <div class="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
+                    <div class="md:order-last">
+                         <h2 class="text-4xl font-extrabold text-gray-900">Compliance</h2>
+                         <p class="mt-4 text-lg text-gray-600">Geloof ons niet op ons woord. Onze maatregelen zijn getoetst en gecertificeerd door toonaangevende auditors.</p>
+                         <div class="mt-8 grid grid-cols-2 gap-6">
+                             <div class="compliance-card">
+                                 <img src="https://placehold.co/60x60/059669/FFFFFF?text=SOC" alt="SOC 2 Badge" class="h-16 w-16 rounded-full mx-auto mb-3">
+                                 <h3 class="font-bold text-base">SOC 2 Type II</h3>
+                                 <a href="#" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 mt-2">Bekijk rapport</a>
+                            </div>
+                             <div class="compliance-card">
+                                 <img src="https://placehold.co/60x60/1f2937/FFFFFF?text=ISO" alt="ISO 27001 Badge" class="h-16 w-16 rounded-full mx-auto mb-3">
+                                 <h3 class="font-bold text-base">ISO/IEC 27001</h3>
+                                 <a href="#" class="text-xs font-semibold text-emerald-600 hover:text-emerald-700 mt-2">Leer meer</a>
+                            </div>
+                        </div>
+                        <div class="mt-6 text-center bg-gray-100 p-6 rounded-lg">
+                            <h3 class="text-xl font-bold mb-2">De Kracht van Pon</h3>
+                            <p class="text-sm text-gray-600">Als onderdeel van Pon profiteren we van een robuust, centraal Security & Privacy Office voor onafhankelijk toezicht en diepgaande expertise.</p>
+                        </div>
+                    </div>
+                     <div class="rounded-lg overflow-hidden">
+                        <img src="https://placehold.co/600x450/ffedd5/9a3412?text=Certificeringen" alt="Abstracte visualisatie van certificeringen en badges" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </section>
+
+             <!-- Reliability Sectie -->
+            <section id="reliability" class="content-section">
+                <div class="grid md:grid-cols-2 gap-12 lg:gap-24 items-center">
+                    <div class="rounded-lg overflow-hidden md:order-last">
+                        <img src="https://placehold.co/600x450/e0e7ff/3730a3?text=Uptime+%26+Herstel" alt="Abstracte visualisatie van cloud betrouwbaarheid" class="w-full h-full object-cover">
+                    </div>
+                    <div>
+                        <h2 class="text-4xl font-extrabold text-gray-900">Betrouwbaarheid</h2>
+                        <p class="mt-4 text-lg text-gray-600">Onze service is ontworpen voor maximale beschikbaarheid en continuïteit, zodat u altijd op ons kunt rekenen.</p>
+                         <ul class="mt-8 space-y-4 text-gray-600">
+                            <li class="flex items-start"><i data-lucide="cloud" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Hoge Beschikbaarheid:</strong> We garanderen een hoge uptime dankzij de redundante infrastructuur van AWS.</span></li>
+                            <li class="flex items-start"><i data-lucide="database-backup" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Back-up & Herstel:</strong> Dagelijkse, versleutelde back-ups zorgen ervoor dat uw data altijd veilig is.</span></li>
+                            <li class="flex items-start"><i data-lucide="building" class="w-6 h-6 text-emerald-600 mr-3 mt-1 flex-shrink-0"></i><span><strong>Stabiele Basis (Pon):</strong> We bieden de financiële stabiliteit en continuïteit van een groot, internationaal bedrijf.</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Reviews Section -->
+            <section id="reviews" class="content-section">
+                <div class="bg-white">
+                    <div class="max-w-4xl mx-auto text-center">
+                        <p class="text-base font-semibold text-emerald-600">GEVERIFIEERDE KLANTBEOORDELINGEN</p>
+                        <div class="mt-4 flex items-center justify-center">
+                            <span class="text-5xl font-extrabold text-gray-900 mr-2">4.6</span>
+                            <div class="flex flex-col items-start">
+                                <div class="flex space-x-1 text-yellow-400">
+                                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    <svg class="w-6 h-6 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                    <svg class="w-6 h-6 text-gray-300 fill-current" viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+                                </div>
+                                <span class="text-sm text-gray-500 mt-1">Gebaseerd op 935 Google Reviews</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- FAQ Sectie -->
+            <section id="faq" class="content-section">
+                <div class="text-center mb-16">
+                     <h2 class="text-4xl font-extrabold text-gray-900">Veelgestelde Vragen</h2>
+                     <p class="mt-4 text-lg text-gray-600 max-w-3xl mx-auto">Vind hier antwoorden op de meest gestelde vragen over ons Trust Center.</p>
+                </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     
-                    <!-- BLOK 1: DE PRIVACY BLUEPRINT (AVG) -->
-                    <div id="card-privacy" class="security-card p-0">
-                        <div class="p-6 flex flex-col justify-between h-full">
-                            <div>
-                                <div class="flex items-start mb-2">
-                                    <span class="card-header-icon text-green-600"> 📄</span>
-                                    <h3 class="text-xl font-semibold text-gray-900 leading-tight mt-1">De Privacy Blueprint</h3>
-                                </div>
-                                <p class="mt-3 text-gray-600 text-sm">Strategisch ontwerp voor wettelijke naleving via AVG/GDPR, gericht op Dataminimalisatie en Security by Design.</p>
+                    <!-- Security FAQ Block -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-8">
+                        <h3 class="text-2xl font-bold text-gray-800 border-b-2 border-blue-300 pb-2 mb-6">Security</h3>
+                        <div class="space-y-4">
+                             <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <button class="accordion-trigger w-full text-left" aria-expanded="false" aria-controls="acc-faq-sec-1">
+                                    <span class="text-lg font-semibold">Hoe beschermen jullie je tegen ransomware?</span>
+                                     <i data-lucide="plus" class="toggle-icon text-emerald-600"></i>
+                                </button>
+                                <div id="acc-faq-sec-1" class="accordion-content" data-state="closed"><div class="pt-4 text-gray-600">
+                                   We implementeren een gelaagde verdediging, inclusief NextGen anti-malware, strikte toegangscontroles, en versleutelde, onveranderlijke (immutable) back-ups. Deze back-ups zijn cruciaal voor een snel herstel zonder losgeld te betalen.
+                                </div></div>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <button class="accordion-trigger w-full text-left" aria-expanded="false" aria-controls="acc-faq-sec-2">
+                                    <span class="text-lg font-semibold">Hoe beveiligen jullie de laptops van medewerkers?</span>
+                                     <i data-lucide="plus" class="toggle-icon text-emerald-600"></i>
+                                </button>
+                                <div id="acc-faq-sec-2" class="accordion-content" data-state="closed"><div class="pt-4 text-gray-600">
+                                   Al onze laptops zijn voorzien van endpoint protection (NextGen anti-virus), schijfversleuteling en worden beheerd via een centraal systeem dat zorgt voor snelle security-updates. We hanteren een strikt beleid om de fysieke en digitale veiligheid te waarborgen.
+                                </div></div>
                             </div>
                         </div>
-                        <a href="#detail-privacy-accordeon" class="text-emerald-600 hover:text-emerald-700 font-semibold text-sm p-6 pt-0 mt-auto flex items-center group">Lees de details <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span></a>
                     </div>
-
-                    <!-- BLOK 2: DE DIGITALE VESTING (Technische Defensie) -->
-                    <div id="card-infra" class="security-card p-0">
-                        <div class="p-6 flex flex-col justify-between h-full">
-                            <div>
-                                <div class="flex items-start mb-2">
-                                    <span class="card-header-icon text-red-500"> 🛡️</span>
-                                    <h3 class="text-xl font-semibold text-gray-900 leading-tight mt-1">De Digitale Vesting</h3>
-                                </div>
-                                <p class="mt-3 text-gray-600 text-sm">Gelaagde technische verdediging met sterke toegangscontroles, versleuteling en NextGen anti-malware oplossingen.</p>
-                            </div>
-                        </div>
-                        <a href="#detail-infra-accordeon" class="text-emerald-600 hover:text-emerald-700 font-semibold text-sm p-6 pt-0 mt-auto flex items-center group">Lees de details <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span></a>
-                    </div>
-
-                    <!-- BLOK 3: HET KEURMERK: SOC 2 (Assurance) -->
-                    <div id="card-soc2" class="security-card p-0">
-                        <div class="p-6 flex flex-col justify-between h-full">
-                            <div>
-                                <div class="flex items-start mb-2">
-                                    <span class="card-header-icon text-blue-500"> ⭐</span>
-                                    <h3 class="text-xl font-semibold text-gray-900 leading-tight mt-1 ml-3">Het Keurmerk: SOC 2</h3>
-                                </div>
-                                <p class="mt-3 text-gray-600 text-sm">Ons SOC 2 Type 2 assurance-rapport (KPMG) bewijst dat onze security-maatregelen daadwerkelijk effectief operationeel zijn geweest.</p>
-                            </div>
-                        </div>
-                        <a href="#detail-soc2-accordeon" class="text-emerald-600 hover:text-emerald-700 font-semibold text-sm p-6 pt-0 mt-auto flex items-center group">Lees de details <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span></a>
-                    </div>
-
-                    <!-- BLOK 4: ONZE PON FUNDATIE (Continuïteit & Expertise) -->
-                    <div id="card-proces" class="security-card p-0">
-                        <div class="p-6 flex flex-col justify-between h-full">
-                            <div>
-                                <div class="flex items-start mb-2">
-                                    <span class="card-header-icon text-gray-600"> ⚙️</span>
-                                    <h3 class="text-xl font-semibold text-gray-900 leading-tight mt-1">Onze Pon Fundatie</h3>
-                                </div>
-                                <p class="mt-3 text-gray-600 text-sm">Wij liften mee op de robuuste security-infrastructuur, de interne audits en de diepgaande expertise van de Pon Groep.</p>
-                            </div>
-                        </div>
-                        <a href="#detail-pon-accordeon" class="text-emerald-600 hover:text-emerald-700 font-semibold text-sm p-6 pt-0 mt-auto flex items-center group">Lees de details <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span></a>
-                    </div>
-                </div>
-            </section>
-            
-            <!-- TRUST BAR MET LOGO'S (NU TEKSTUEEL) -->
-            <section id="trust-bar" class="text-center py-12 md:py-16 bg-gray-50 border-y border-gray-200">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8">Geverifieerde Compliance</h2>
-                <div class="flex flex-col sm:flex-row justify-center items-center space-y-8 sm:space-y-0 sm:space-x-16">
                     
-                    <!-- SOC 2 TYPE II BADGE (Tekstueel) -->
-                    <div class="flex flex-col items-center space-y-2">
-                        <div class="trust-badge-placeholder soc2-placeholder">
-                            SOC 2 Type II<br>Report
+                    <!-- Privacy FAQ Block -->
+                    <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-8">
+                        <h3 class="text-2xl font-bold text-gray-800 border-b-2 border-emerald-300 pb-2 mb-6">Privacy</h3>
+                        <div class="space-y-4">
+                             <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <button class="accordion-trigger w-full text-left" aria-expanded="false" aria-controls="acc-faq-priv-1">
+                                    <span class="text-lg font-semibold">Worden mijn gegevens gedeeld met andere Pon-bedrijven?</span>
+                                     <i data-lucide="plus" class="toggle-icon text-emerald-600"></i>
+                                </button>
+                                <div id="acc-faq-priv-1" class="accordion-content" data-state="closed"><div class="pt-4 text-gray-600">
+                                   Nee, uw persoonsgegevens worden alleen binnen Lease a Bike verwerkt voor het uitvoeren van de leaseovereenkomst. Gegevens worden niet zonder expliciete wettelijke grondslag of uw toestemming gedeeld met andere Pon-bedrijven.
+                                </div></div>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <button class="accordion-trigger w-full text-left" aria-expanded="false" aria-controls="acc-faq-priv-2">
+                                    <span class="text-lg font-semibold">Wat zijn mijn rechten onder de AVG?</span>
+                                     <i data-lucide="plus" class="toggle-icon text-emerald-600"></i>
+                                </button>
+                                <div id="acc-faq-priv-2" class="accordion-content" data-state="closed"><div class="pt-4 text-gray-600">
+                                   U heeft recht op inzage, correctie, verwijdering en overdraagbaarheid van uw gegevens. U kunt hiervoor een verzoek indienen bij onze Functionaris Gegevensbescherming via de contactgegevens in onze privacyverklaring.
+                                </div></div>
+                            </div>
                         </div>
-                        <p class="text-xs text-gray-600">Hoogste Assurance Niveau<br>(Afmeting: 100x100px)</p>
                     </div>
-
-                    <!-- ISO/IEC 27001 BADGE (Tekstueel) -->
-                    <div class="flex flex-col items-center space-y-2">
-                        <div class="trust-badge-placeholder iso27k-placeholder">
-                            ISO/IEC 27001<br>Standard
+                    
+                     <!-- Compliance & SOC 2 FAQ Block -->
+                    <div class="bg-orange-50 border border-orange-200 rounded-lg p-8">
+                        <h3 class="text-2xl font-bold text-gray-800 border-b-2 border-orange-300 pb-2 mb-6">Compliance & SOC 2</h3>
+                        <div class="space-y-4">
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <button class="accordion-trigger w-full text-left" aria-expanded="false" aria-controls="acc-faq-comp-1">
+                                    <span class="text-lg font-semibold">Kan ik een kopie van het SOC 2-rapport ontvangen?</span>
+                                     <i data-lucide="plus" class="toggle-icon text-emerald-600"></i>
+                                </button>
+                                <div id="acc-faq-comp-1" class="accordion-content" data-state="closed"><div class="pt-4 text-gray-600">
+                                   Vanwege de vertrouwelijke aard is het volledige SOC 2-rapport beschikbaar onder een Non-Disclosure Agreement (NDA). Neem contact op met uw accountmanager voor de mogelijkheden om de samenvatting of het volledige rapport in te zien.
+                                </div></div>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <button class="accordion-trigger w-full text-left" aria-expanded="false" aria-controls="acc-faq-comp-2">
+                                    <span class="text-lg font-semibold">Waarom is een Type II rapport beter dan Type I?</span>
+                                     <i data-lucide="plus" class="toggle-icon text-emerald-600"></i>
+                                </button>
+                                <div id="acc-faq-comp-2" class="accordion-content" data-state="closed"><div class="pt-4 text-gray-600">
+                                  Een Type I rapport beoordeelt het ontwerp van de controles op één specifiek moment. Een Type II rapport, dat wij hebben, toetst de **effectieve werking** van die controles over een langere periode. Dit biedt een veel hogere mate van zekerheid dat onze processen daadwerkelijk werken zoals beschreven.
+                                </div></div>
+                            </div>
                         </div>
-                        <p class="text-xs text-gray-600">Information Security<br>(Afmeting: 100x100px)</p>
                     </div>
-
-                    <!-- ISO 9001 BADGE (Tekstueel) -->
-                    <div class="flex flex-col items-center space-y-2">
-                        <div class="trust-badge-placeholder iso9k-placeholder">
-                            ISO 9001:2015<br>Quality
+                    
+                    <!-- Pon Groep FAQ Block -->
+                    <div class="bg-gray-100 border border-gray-200 rounded-lg p-8">
+                        <h3 class="text-2xl font-bold text-gray-800 border-b-2 border-gray-300 pb-2 mb-6">Pon Groep</h3>
+                        <div class="space-y-4">
+                             <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <button class="accordion-trigger w-full text-left" aria-expanded="false" aria-controls="acc-faq-pon-1">
+                                    <span class="text-lg font-semibold">Wat is de rol van het Pon Security & Privacy Office?</span>
+                                     <i data-lucide="plus" class="toggle-icon text-emerald-600"></i>
+                                </button>
+                                <div id="acc-faq-pon-1" class="accordion-content" data-state="closed"><div class="pt-4 text-gray-600">
+                                  Het Pon S&P Office fungeert als een onafhankelijke 'tweede lijn van defensie'. Zij stellen het beleid op, voeren risico-analyses uit en monitoren de naleving binnen alle Pon-bedrijven (inclusief Lease a Bike).
+                                </div></div>
+                            </div>
+                            <div class="bg-white border border-gray-200 rounded-lg p-6">
+                                <button class="accordion-trigger w-full text-left" aria-expanded="false" aria-controls="acc-faq-pon-2">
+                                    <span class="text-lg font-semibold">Profiteert Lease a Bike van Pon's security-contracten?</span>
+                                     <i data-lucide="plus" class="toggle-icon text-emerald-600"></i>
+                                </button>
+                                <div id="acc-faq-pon-2" class="accordion-content" data-state="closed"><div class="pt-4 text-gray-600">
+                                   Ja, absoluut. Dankzij de schaalgrootte van Pon hebben we toegang tot 'enterprise-grade' security-oplossingen en expertise (zoals geavanceerde threat intelligence) die voor een losstaand bedrijf vaak niet haalbaar zijn.
+                                </div></div>
+                            </div>
                         </div>
-                        <p class="text-xs text-gray-600">Quality Management<br>(Afmeting: 100x100px)</p>
                     </div>
-
+                    
                 </div>
             </section>
 
-            <!-- NIEUWE PARTNER SECTIE -->
-            <section id="partner-logos" class="text-center py-12 md:py-16">
-                <h2 class="text-3xl font-bold text-gray-800 mb-8">Vertrouwd door organisaties wereldwijd</h2>
-                <p class="text-lg max-w-4xl mx-auto text-gray-600 mb-8">
-                    Lease a Bike werkt samen met duizenden vooraanstaande organisaties. Hier is een greep uit de namen die al op ons vertrouwen:
-                </p>
-                <div class="partner-list-container py-4">
-                    <div class="flex items-center space-x-12 px-6">
-                        <!-- GEKLEURDE PARTNER ITEMS met border -->
-                        <a href="#" class="partner-item-bordered color-ing">ING</a>
-                        <a href="#" class="partner-item-bordered color-rituals">Rituals</a>
-                        <a href="#" class="partner-item-bordered color-abnamro">ABN AMRO</a>
-                        <a href="#" class="partner-item-bordered color-boels">Boels</a>
-                        <a href="#" class="partner-item-bordered color-breman">Breman</a>
-                        <a href="#" class="partner-item-bordered color-hso">HSO</a>
-                        <a href="#" class="partner-item-bordered color-kpn">KPN</a>
-                        <a href="#" class="partner-item-bordered color-auping">Auping</a>
-                        <!-- Herhaling om het scroll-effect te simuleren -->
-                        <a href="#" class="partner-item-bordered color-ing">ING</a>
-                        <a href="#" class="partner-item-bordered color-rituals">Rituals</a>
-                        <a href="#" class="partner-item-bordered color-abnamro">ABN AMRO</a>
-                    </div>
+        </div>
+    </main>
+    
+    <footer class="bg-gray-50 border-t border-gray-200">
+        <div class="container mx-auto px-6 py-16">
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-8 text-left">
+                <!-- Lease a Bike Kolom -->
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-4">Lease a Bike</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-emerald-600">Over ons</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Onze collega's</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Vacatures</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Stages</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Contact</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Nieuws</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">MVO</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">FAQ</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Trotse partner van</a></li>
+                    </ul>
                 </div>
-                <p class="text-xs text-gray-400 mt-4">Scroll naar rechts om meer partners te zien.</p>
-            </section>
-            
-            <!-- SECTION 2: GEDETAILLEERDE INKLAPBARE SECTIES (met exclusieve accordeon) -->
-            
-            <!-- 2.1 PRIVACY BLUEPRINT ACCORDEON -->
-            <section id="detail-privacy-accordeon" class="mt-20">
-                <h2 class="text-4xl font-extrabold text-[#1f2937] mb-6">Onze AVG Data Governance</h2>
+
+                <!-- Ik ben een Kolom -->
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-4">Ik ben een</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-emerald-600">Werkgever</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Zelfstandige</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Werknemer</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Fietsenwinkel</a></li>
+                    </ul>
+                </div>
                 
-                <div class="space-y-3">
-                    <div id="privacy-content-main-header" class="detail-accordeon-header-main color-green flex justify-between items-center" onclick="toggleMainDetails('privacy-content-main')">
-                        <span>Datamanagement & Minimalisatie</span>
-                        <span class="text-xl text-white toggle-icon">+</span>
-                    </div>
-                    <div id="privacy-content-main" class="detail-accordeon-content-main">
-                        <div class="space-y-4">
-                             <!-- Sub-Accordeon 1 (Geneste) -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-privacy-1')">
-                                    <span class="font-medium">1. Periodiek beoordelen van onze privacy naleving</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-privacy-1" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Wij respecteren de privacy van onze eigen medewerkers, onze klanten en partners en hun medewerkers. Daarom nemen wij privacy zeer serieus. We voeren jaarlijks een IT-risicobeoordeling en Business Impact Assessment (BIA) uit om ervoor te zorgen dat security en privacy maatregelen worden geïmplementeerd die voldoen aan de nieuwste privacywetgeving en de stand van zaken op het gebied van cybersecurity-bedreigingen.</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 2 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-privacy-2')">
-                                    <span class="font-medium">2. Dataminimalisatie toegepast</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-privacy-2" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Voor de (persoons)gegevens die via ons platform worden verzameld en verwerkt voor het fietsleasetraject is dataminimalisatie toegepast. Dit betekent dat wij alleen de minimale noodzakelijke (persoons)gegevens verzamelen en verwerken die wij nodig hebben voor het fietsleaseproces.</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 3 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-privacy-3')">
-                                    <span class="font-medium">3. Gegevensbewaring ingericht</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-privacy-3" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Bij het bewaren van persoonsgegevens gaat het om het tijdig verwijderen van de gegevens wanneer deze niet meer nodig zijn voor het fietsleaseproces of relevante wetgeving. Wij controleren daarom periodiek of het dataretentiebeleid in de verschillende landen nog actueel is en voeren een beoordeling uit om in kaart te brengen welke (persoons)gegevens verwijderd kunnen worden.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="privacy-design-main-header" class="detail-accordeon-header-main color-baby-blue flex justify-between items-center" onclick="toggleMainDetails('privacy-design-main')">
-                        <span>Privacy by Design is Onze Norm</span>
-                        <span class="text-xl text-white toggle-icon">+</span>
-                    </div>
-                    <div id="privacy-design-main" class="detail-accordeon-content-main">
-                        <div class="space-y-4">
-                            <!-- Sub-Accordeon 4 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-privacy-4')">
-                                    <span class="font-medium">1. Security en privacy by design ontwerp gegarandeerd</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-privacy-4" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Voor alle nieuwe digitale (IT systeem)initiatieven en wijzigingen in bestaande processen of (nieuwe) derde partijen is een verplichte security en privacy by design intake en beoordeling van kracht om ervoor te zorgen dat privacy en security by design worden geïmplementeerd voor de persoonlijke en/of vertrouwelijke gegevens die (nieuw) worden verzameld en/of verwerkt.</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 5 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-privacy-5')">
-                                    <span class="font-medium">2. Periodieke controle Privacyverklaring, Gebruiksvoorwaarden, Cookieverklaring / toolbar</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-privacy-5" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Een belangrijk aspect van privacy is om jou op een transparante en volledige manier te informeren over welke persoonsgegevens worden verzameld, hoe wij de persoonsgegevens verwerken, hoe wij de persoonsgegevens beschermen etc. De belangrijkste documenten hiervoor zijn de Privacyverklaring, Gebruiksvoorwaarden, Cookieverklaring en Cookie-toolbar. Deze documenten worden periodiek beoordeeld door de Functionaris Gegevensbescherming (als onderdeel van de privacy controles) om te bevestigen dat deze nog steeds in overeenstemming zijn met de nieuwste privacywetgeving en jurisprudentie, evenals onze interne (Pon Holdings) privacyvereisten.</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 6 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-privacy-6')">
-                                    <span class="font-medium">3. Professionele software voor privacybeheer aanwezig</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-privacy-6" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Wij zijn, als verwerkingsverantwoordelijke voor het fietsleaseplatform, verantwoordelijk voor de privacyprocessen, zoals het hebben van een verwerkingsregister, het afhandelen van verzoeken om de rechten van betrokkenen, de afhandeling van (potentiële) datalekken, security en privacy by design intakes en beoordeling uitvoeren. Daarom hebben wij voor deze processen professionele software (zoals OneTrust) geïmplementeerd die zorgen voor een adequate, tijdige en volledige registratie, verwerking en monitoring van de opvolging.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="privacy-beheer-main-header" class="detail-accordeon-header-main color-blue-purple flex justify-between items-center" onclick="toggleMainDetails('privacy-beheer-main')">
-                        <span>Volledige Controle over Uw Informatie</span>
-                        <span class="text-xl text-white toggle-icon">+</span> 
-                    </div>
-                    <div id="privacy-beheer-main" class="detail-accordeon-content-main">
-                        <div class="space-y-4">
-                            <!-- Sub-Accordeon 7 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-privacy-7')">
-                                    <span class="font-medium">1. Persoonlijke gegevens in Europese Economische Ruimte (EER)</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-privacy-7" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Wij willen alle persoonsgegevens opslaan op een plek die voldoende privacywaarborgen biedt. Daarom streven wij ernaar dat alle persoonlijke gegevens in de Europese Economische Ruimte (EER) zijn opgeslagen.</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 8 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-privacy-8')">
-                                    <span class="font-medium">2. Sterk leveranciersmanagement</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-privacy-8" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Leveranciers zijn de achilleshiel, omdat je niet de volledige controle over hen hebt. Daarom richten we ons op het contracteren van enkel adequate externe leveranciers en hebben we sterke controles op leveranciersbeheer geïmplementeerd. Alle nieuwe derde partijen worden gescreend als onderdeel van de security en privacy by design intake en beoordeling om te bepalen welke maatregelen nodig zijn (zoals gegevensverwerkersovereenkomst, aanvullende security maatregelen) en de follow-up te monitoren voordat deze live gaat.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                 <!-- Bekijk ook Kolom -->
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-4">Bekijk ook</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-emerald-600">Dealer locator</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Fiets leasen? Bereken je kosten</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Fietsplan 2025</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Inloggen</a></li>
+                    </ul>
                 </div>
-            </section>
-            
-            <!-- 2.2 DIGITALE VESTING ACCORDEON -->
-            <section id="detail-infra-accordeon" class="mt-20">
-                <h2 class="text-4xl font-extrabold text-orange-500 mb-6">Kernverdediging: De Digitale Vesting</h2>
 
-                <div class="space-y-3">
-                    <div id="infra-maatregelen-main-header" class="detail-accordeon-header-main color-baby-blue flex justify-between items-center" onclick="toggleMainDetails('infra-maatregelen-main')">
-                        <span>Uw Data is Beschermd: Hardening & Monitoring</span>
-                        <span class="text-xl text-white toggle-icon">+</span>
-                    </div>
-                    <div id="infra-maatregelen-main" class="detail-accordeon-content-main">
-                        <div class="space-y-4">
-                            <!-- Sub-Accordeon 1 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-infra-1')">
-                                    <span class="font-medium">1. Adequate maatregelen ter bescherming tegen security bedreigingen</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-infra-1" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Jaarlijks voeren wij een IT-risicoanalyse en Business Impact Assessment uit (BIA) om ervoor te zorgen dat security en privacy risico's adequaat worden afgedekt door security en privacy maatregelen en om te beoordelen of de maatregelen nog steeds voldoen aan de nieuwste privacywetgeving en de stand van zaken op het gebied van cybersecurity-bedreigingen. De gedefinieerde maatregelen zijn gebaseerd op de internationale standaarden van AICPA (SOC 2 Trust Service Criteria), ISO (ISO27001: 2022) en BSI (C5:2020 minimumvereisten voor veilige cloud computing).</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 2 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-infra-2')">
-                                    <span class="font-medium">2. Adequate hardening</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-infra-2" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Hardening is een van de belangrijke security maatregelen om het security niveau te verhogen, omdat het een minimaal security niveau biedt voor de betrokken IT-middelen. Daarom hebben we onder andere de CIS en AWS Foundational Benchmarks-baseline geïmplementeerd voor de IT-middelen in onze AWS-hostingomgeving en hebben we een CIS-baseline voor onze laptops geimplementeerd.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div id="infra-toegang-main-header" class="detail-accordeon-header-main color-blue-purple flex justify-between items-center" onclick="toggleMainDetails('infra-toegang-main')">
-                        <span>Toegang is Strikt Gecontroleerd</span>
-                        <span class="text-xl text-white toggle-icon">+</span>
-                    </div>
-                    <div id="infra-toegang-main" class="detail-accordeon-content-main">
-                        <div class="space-y-4">
-                            <!-- Sub-Accordeon 3 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-infra-3')">
-                                    <span class="font-medium">1. Sterke toegangscontroles</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-infra-3" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Wij hebben adequate wachtwoordvereisten, autorisaties worden toegewezen op basis van het ‘least privilege access’- en ‘need to know’-principe, en hebben multi-factor-authenticatie (MFA) geïmplementeerd om het risico op ongeautoriseerde toegang te minimaliseren.</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 4 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-infra-4')">
-                                    <span class="font-medium">2. Wij houden onze producten en IT-infrastructuur nauwlettend in de gaten</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-infra-4" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">We voeren voortdurend (handmatige) penetratietests en kwetsbaarheidsscans van binnen en buiten uit met professionele security tools op ons platform en websites om ervoor te zorgen dat kwetsbaarheden worden geïdentificeerd. We beschikken over een kwetsbaarheden-management proces om ervoor te zorgen dat de kwetsbaarheden tijdig worden opgelost en dat open deuren voor hackers worden voorkomen.</p>
-                                </div>
-                            </div>
-                             <!-- Sub-Accordeon 5 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-infra-5')">
-                                    <span class="font-medium">3. NextGen bescherming tegen virussen en malware</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-infra-5" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Een heel belangrijk aspect is het beschikken over adequate anti-virus en anti-malware software op de laptops en servers om virussen en malware ter plekke te stoppen. We gebruiken professionele NextGen anti-virus en anti-malware software om elke opduikende dreiging actief te monitoren en onmiddellijk actie te kunnen ondernemen.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="infra-data-main-header" class="detail-accordeon-header-main color-green flex justify-between items-center" onclick="toggleMainDetails('infra-data-main')">
-                        <span>Externe Partners en Back-ups</span>
-                        <span class="text-xl text-white toggle-icon">+</span>
-                    </div>
-                    <div id="infra-data-main" class="detail-accordeon-content-main">
-                        <div class="space-y-4">
-                            <!-- Sub-Accordeon 6 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-infra-6')">
-                                    <span class="font-medium">1. Versleutelde gegevens en beschermde back-ups</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-infra-6" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Uiteraard worden de gegevens op ons platform zowel “in rust” als “in transit” versleuteld met adequate protocollen zodat hackers geen toegang hebben tot de gegevens. Daarnaast hebben we ook bescherming van back-ups geïmplementeerd als extra maatregel bij het bestrijden van ransomware-aanvallen.</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 7 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-infra-7')">
-                                    <span class="font-medium">2. Sterk leveranciersmanagement</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-infra-7" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Leveranciers zijn de achilleshiel in het security raamwerk. Daarom kiezen we enkel voor externe leveranciers die aan onze standaarden voldoen en hebben we sterke controles op leveranciersbeheer geïmplementeerd. Tijdens het afsluiten van de contracten met derden zorgen wij ervoor dat de relevante privacymaatregelen zijn getroffen (onder andere een gegevensverwerkingsovereenkomst) en beoordelen we of leveranciers voldoende security hebben getroffen. Jaarlijks beoordelen wij de leveranciers op naleving van onze interne security standaard op basis van door de leverancier aangeleverde SOC 2 en/of andere security rapporten.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Fietsmerken Kolom -->
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-4">Fietsmerken</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-emerald-600">Gazelle</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Cannondale</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Roetz</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Cervélo</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Kalkhoff</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Urban Arrow</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Veloretti</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Van Raam</a></li>
+                         <li><a href="#" class="hover:text-emerald-600">Cube</a></li>
+                        <li><a href="#" class="hover:text-emerald-600 font-semibold">Alle merken</a></li>
+                    </ul>
                 </div>
-            </section>
-            
-            <!-- 2.3 KEURMERK & PON ACCORDEON -->
-            <section id="detail-soc2-accordeon" class="mt-20">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6">Keurmerk: SOC 2 & Pon Fundatie</h2>
-                
-                <div class="space-y-3">
-                    <div id="assurance-soc2-main-header" class="detail-accordeon-header-main color-blue-purple flex justify-between items-center" onclick="toggleMainDetails('assurance-soc2-main')">
-                        <span>Onafhankelijk Bewijs: SOC 2 Assurance</span>
-                        <span class="text-xl text-white toggle-icon">+</span>
-                    </div>
-                    <div id="assurance-soc2-main" class="detail-accordeon-content-main">
-                        <div class="space-y-4">
-                            <p class="py-3 text-gray-700">Geloof ons niet alleen op ons woord. Ons SOC 2 ® type 2 assurance-rapport uitgegeven door KPMG is de beste manier om te laten zien dat we security en privacy serieus nemen. Het bewijst dat onze maatregelen niet alleen op papier staan, maar ook daadwerkelijk werken en uw gegevens veilig houden. Meer zekerheid en bewijs dat je niet kunt krijgen!</p>
-                            
-                            <ul class="list-disc list-inside space-y-1 ml-4 text-gray-700">
-                                <li>Hoogste niveau van zekerheid.</li>
-                                <li>Alle Security & Privacy (S&P) maatregelen geïmplementeerd.</li>
-                                <li>Bewijs dat maatregelen werken (Type 2).</li>
-                                <li>Zowel het SOC 2 ® assurance als het ISO 27001 (ISO27k) raamwerk zijn bekende raamwerken, maar SOC 2 biedt veel meer toegevoegde waarde voor jou als de klant. Experts noemen ISO27k ook wel een papieren tijger. Bekijk de vergelijking via deze <a href="LINK_NAAR_VERGELIJKING" class="text-emerald-600 hover:underline">link</a>.</li>
-                            </ul>
-                            
-                            <p class="py-3 text-gray-700 mt-4">Een SOC 2 ® type 2 assurance rapport is het hoogste niveau van zekerheid dat we aan jou kunnen bieden over geïmplementeerde security en privacy maatregelen. Ons SOC 2 ® assurance rapport wordt uitgegeven door de externe IT auditor KPMG. De externe auditor heeft gecontroleerd en bevestigd dat alle vereiste security en privacy maatregelen van het SOC 2 ® raamwerk zijn ontworpen en geïmplementeerd. Wij hebben een type 2 variant van het SOC 2 ® rapport. Dit betekent dat de externe IT auditor tevens heeft bevestigd dat alle security en privacy maatregelen ook tijdens de auditperiode effectief operationeel zijn. Kortom: we hebben het bewijs dat de maatregelen daadwerkelijk hebben gewerkt!</p>
-                            
-                            <p class="py-3 text-gray-700 mt-4">Wilt u meer informatie over onze SOC 2 assurance, neem dan contact op met jouw accountmanager.</p>
-                        </div>
-                    </div>
 
-                    <div id="assurance-pon-main-header" class="detail-accordeon-header-main color-green flex justify-between items-center" onclick="toggleMainDetails('assurance-pon-main')">
-                        <span>Pon: Een Solide Fundering</span>
-                        <span class="text-xl text-white toggle-icon">+</span>
-                    </div>
-                    <div id="assurance-pon-main" class="detail-accordeon-content-main">
-                        <div class="space-y-4">
-                            <!-- Sub-Accordeon 1 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-pon-1')">
-                                    <span class="font-medium">1. Onafhankelijke beoordelingen en monitoring</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-pon-1" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Pon Holdings heeft als onafhankelijke afdeling de Pon Security en Privacy (S&P) Office ingericht. De deskundige en ervaren Pon Security Managers en Privacy Officers van de S&P Office voeren continu risicobeoordelingen uit en houden toezicht op de naleving van de security en privacy. De status van de security en privacy wordt onafhankelijk gerapporteerd aan de CFO van Pon alsmede aan het relevante management van Lease a Bike.</p>
-                                </div>
-                            </div>
-                            <!-- Sub-Accordeon 2 -->
-                            <div class="border border-gray-200 rounded-lg">
-                                <div class="detail-accordeon-header flex justify-between items-center p-4 bg-white" onclick="toggleDetails('sub-pon-2')">
-                                    <span class="font-medium">2. Meeliften op solide basis</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="sub-pon-2" class="detail-accordeon-content">
-                                    <p class="py-3 text-gray-700">Door onderdeel te zijn van de Pon Groep profiteert Lease a Bike direct van een robuust Security & Privacy Office, wat zorgt voor een hoog niveau van interne controle en risicomanagement. Deze gezamenlijke infrastructuur en expertise zorgen voor een significant hogere beveiligingsstandaard.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Fietsaanbod Kolom -->
+                <div>
+                    <h3 class="font-bold text-gray-900 mb-4">Fietsaanbod</h3>
+                    <ul class="space-y-2 text-sm text-gray-600">
+                        <li><a href="#" class="hover:text-emerald-600">Elektrische fietsen</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Bakfietsen</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Speed pedelecs</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Racefietsen</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Urban fietsen</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Gravelbikes</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Mountainbikes</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Stadsfietsen</a></li>
+                        <li><a href="#" class="hover:text-emerald-600">Aangepaste fietsen</a></li>
+                        <li><a href="#" class="hover:text-emerald-600 font-semibold">Alle fietsen</a></li>
+                    </ul>
                 </div>
-            </section>
-            
-            <!-- SECTION 3: UW ROL IN VEILIGHEID (Minimalistische CTA-blokken) -->
-            <section id="uw-rol" class="mt-20">
-                <h2 class="text-4xl font-extrabold text-orange-500 mb-6">Uw Rol in Contractuele Veiligheid</h2>
-                <p class="text-lead max-w-4xl mx-auto text-gray-600 mb-10">
-                    Security is een gedeelde verantwoordelijkheid. Wij bieden de controls; uw beleid en medewerkers zijn cruciaal voor de integriteit van onze samenwerking.
-                </p>
-
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- ROL 1: BELEID & PROCESSEN -->
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col">
-                        <h3 class="text-xl font-semibold text-gray-900 leading-snug">Intern Beleid en Processes</h3>
-                        
-                        <div id="rol-details-1" class="details-hidden">
-                             <p class="text-sm text-gray-600 mb-2">Zorg ervoor dat de gedefinieerde security- en privacymaatregelen worden vertaald naar uw interne beleid en processen.</p>
-                        </div>
-                        
-                        <button onclick="toggleRolDetails('rol-details-1', this)" class="cta-button mt-4 justify-center sm:justify-start">
-                            <span class="details-text">Lees de Details</span> 
-                            <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
-                        </button>
-                    </div>
-                    
-                    <!-- ROL 2: CONTRACTUELE ZEKERHEID -->
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col">
-                        <h3 class="text-xl font-semibold text-gray-900 leading-snug">Contractuele Zekerheid</h3>
-                        
-                        <div id="rol-details-2" class="details-hidden">
-                             <p class="text-sm text-gray-600 mb-2">Beoordeel onze samenwerkingsovereenkomst om de verdeling van de rollen (Verwerkingsverantwoordelijke vs. Verwerker) en de bijbehorende verantwoordelijkheden te begrijpen.</p>
-                        </div>
-                        
-                        <button onclick="toggleRolDetails('rol-details-2', this)" class="cta-button mt-4 justify-center sm:justify-start">
-                            <span class="details-text">Lees de Details</span> 
-                            <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
-                        </button>
-                    </div>
-                    
-                    <!-- ROL 3: AWARENESS EN TRAINING -->
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm flex flex-col">
-                        <h3 class="text-xl font-semibold text-gray-900 leading-snug">Awareness & Training</h3>
-                        
-                        <div id="rol-details-3" class="details-hidden">
-                             <p class="text-sm text-gray-600 mb-2">Verzeker continue training van uw werknemers in security awareness (phishing, social engineering) om de menselijke 'firewall' te versterken.</p>
-                        </div>
-                        
-                        <button onclick="toggleRolDetails('rol-details-3', this)" class="cta-button mt-4 justify-center sm:justify-start">
-                            <span class="details-text">Lees de Details</span> 
-                            <span class="ml-2 transition-transform duration-200 group-hover:translate-x-1">&rarr;</span>
-                        </button>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 4: VEELGESTELDE VRAGEN -->
-            <section id="faq" class="mt-20">
-                <h2 class="text-4xl font-extrabold text-[#3b82f6] mb-8">Veelgestelde Vragen over Security</h2>
-                
-                <div class="space-y-8">
-                    
-                    <!-- CATEGORIE: PRIVACY -->
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                        <h3 class="text-xl font-bold text-orange-500 mb-4">Veelgestelde vragen: Privacy</h3>
-                        <div class="space-y-2">
-                            <!-- VRAAG 1 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-privacy-1')">
-                                    <span class="text-base font-medium">Hoe zorgt Lease a Bike ervoor dat onze fietsleaseprocessen privacy-compliant blijven?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-privacy-1" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">We hanteren Privacy-by-Design bij de ontwikkeling van onze IT-systemen. Dit betekent dat privacybescherming vanaf het begin in alle processen is ingebouwd. We minimaliseren de verzameling van persoonsgegevens en anonimiseren data waar mogelijk, om te allen tijde aan de AVG te voldoen.</p>
-                                </div>
-                            </div>
-                            <!-- VRAAG 2 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-privacy-2')">
-                                    <span class="text-base font-medium">Moet ik als werkgever een verwerkersovereenkomst (DPA) afsluiten met Lease a Bike?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-privacy-2" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Nee, in de meeste gevallen zijn zowel de werkgever als Lease a Bike Verwerkingsverantwoordelijken (Controller-Controller relatie). Dit komt doordat we beide het doel en de middelen van de verwerking van werknemersgegevens bepalen (u voor arbeidsvoorwaarden, wij voor de leaseovereenkomst). Dit is vastgelegd in onze samenwerkingsovereenkomst.</p>
-                                </div>
-                            </div>
-                            <!-- VRAAG 3 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-privacy-3')">
-                                    <span class="text-base font-medium">Kunnen wij aan het einde van de samenwerking alle gegevens van jouw werknemers aan jou als werkgever overdragen?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-privacy-3" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Nee, in de meeste gevallen zijn zowel de werkgever als Lease a Bike Verwerkingsverantwoordelijken (Controller-Controller relatie). Dit komt doordat we beide het doel en de middelen van de verwerking van werknemersgegevens bepalen (u voor arbeidsvoorwaarden, wij voor de leaseovereenkomst). Dit is vastgelegd in onze samenwerkingsovereenkomst.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CATEGORIE: SECURITY -->
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                        <h3 class="text-xl font-bold text-blue-500 mb-4">Veelgestelde vragen: Security</h3>
-                        <div class="space-y-2">
-                            <!-- VRAAG 1 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-security-1')">
-                                    <span class="text-base font-medium">Heeft Lease a Bike adequate veiligheidsmaatregelen getroffen?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-security-1" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Ja, absoluut. Wij volgen de best practices uit de sector en de richtlijnen van de AVG/GDPR, waaronder sterke encryptie (AES-256) voor alle data, en state-of-the-art netwerkbeveiliging (WAFs en IDS) om onze IT-omgeving te beschermen tegen cyberdreigingen. Onze maatregelen zijn ontworpen om de beschikbaarheid, integriteit en vertrouwelijkheid van alle gegevens te waarborgen.</p>
-                                </div>
-                            </div>
-                            <!-- VRAAG 2 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-security-2')">
-                                    <span class="text-base font-medium">Voeren jullie Penetratie Tests uit?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-security-2" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Ja, we laten jaarlijks onafhankelijke Penetratie Tests uitvoeren door geaccrediteerde externe partijen. Deze tests simuleren aanvallen van buitenaf op ons platform en onze infrastructuur om proactief kwetsbaarheden te identificeren en op te lossen. Dit maakt deel uit van onze continue verbetercyclus.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CATEGORIE: ASSURANCE EN SOC 2 -->
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                        <h3 class="text-xl font-bold text-orange-500 mb-4">Veelgestelde vragen: Assurance en SOC 2 ®</h3>
-                        <div class="space-y-2">
-                            <!-- VRAAG 1 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-assurance-1')">
-                                    <span class="text-base font-medium">Wat betekenen assurance en SOC 2 ®?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-assurance-1" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Assurance is het proces waarbij een onafhankelijke auditor verklaart dat onze interne controlesystemen betrouwbaar zijn. SOC 2 (Service Organization Control 2) is een auditstandaard ontwikkeld door het AICPA (Amerikaanse Instituut van Gecertificeerde Accountants) die beoordeelt hoe we klantgegevens beheren op basis van vijf 'Trust Service Criteria' (Security, Availability, Processing Integrity, Confidentiality en Privacy).</p>
-                                </div>
-                            </div>
-                            <!-- VRAAG 2 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-assurance-2')">
-                                    <span class="text-base font-medium">Wat is het verschil tussen een Type 1 en Type 2 SOC 2 ® rapporten?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-assurance-2" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Een Type 1 rapport beschrijft de opzet en het bestaan van onze controles op een specifiek moment (een momentopname). Een Type 2 rapport is veel grondiger; het test de effectieve werking van de controles over een periode van minimaal zes maanden. Lease a Bike streeft naar een Type 2 rapport, omdat dit de hoogste mate van assurance biedt.</p>
-                                </div>
-                            </div>
-                            <!-- VRAAG 3 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-assurance-3')">
-                                    <span class="text-base font-medium">Waarom geeft Lease a Bike de voorkeur aan SOC 2 ® boven een ISO 27001 certificaat?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-assurance-3" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">ISO 27001 is gericht op de implementatie van een Managementsysteem voor Informatiebeveiliging (ISMS), terwijl SOC 2 zich specifiek richt op de operationele effectiviteit van de controles rondom dataverwerking. Voor onze partners en klanten, die zich zorgen maken over hun data in onze cloud, biedt SOC 2 een meer gerichte en bruikbare vorm van assurance.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- CATEGORIE: PON GROEP ASSURANCE -->
-                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
-                        <h3 class="text-xl font-bold text-blue-500 mb-4">Veelgestelde vragen: Pon Groep Assurance</h3>
-                        <div class="space-y-2">
-                            <!-- VRAAG 1 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-pon-1')">
-                                    <span class="text-base font-medium">Hoe zorgt de Pon S&P Office voor onafhankelijke beoordelingen en monitoring?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-pon-1" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Pon Holdings heeft als onafhankelijke afdeling de Pon Security en Privacy (S&P) Office ingericht. De deskundige en ervaren Pon Security Managers en Privacy Officers van de S&P Office voeren continu risicobeoordelingen uit en houden toezicht op de naleving van de security en privacy. De status van de security en privacy wordt onafhankelijk gerapporteerd aan de CFO van Pon alsmede aan het relevante management van Lease a Bike.</p>
-                                </div>
-                            </div>
-                            <!-- VRAAG 2 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-pon-2')">
-                                    <span class="text-base font-medium">Welke rol spelen Pon Security & Privacy Intakes in jullie projecten?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-pon-2" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Alle nieuwe projecten, systemen en grote wijzigingen binnen Lease a Bike ondergaan een verplichte Security & Privacy Intake door de Pon S&P Office. Dit zorgt ervoor dat security- en privacyrisico's vroegtijdig worden geïdentificeerd en de juiste controles worden ingebouwd, lang voordat de oplossing live gaat. Dit is essentieel voor onze Privacy-by-Design aanpak.</p>
-                                </div>
-                            </div>
-                            <!-- VRAAG 3 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-pon-3')">
-                                    <span class="text-base font-medium">Worden Lease a Bike medewerkers getraind in security awareness?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-pon-3" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Ja, als onderdeel van het bredere Pon Awareness Programma volgen alle medewerkers van Lease a Bike verplichte en periodieke security awareness trainingen. Dit zorgt ervoor dat onze mensen de menselijke 'firewall' vormen tegen dreigingen zoals phishing en social engineering, wat cruciaal is voor de algehele beveiliging.</p>
-                                </div>
-                            </div>
-                            <!-- VRAAG 4 -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-pon-4')">
-                                    <span class="text-base font-medium">Hoe profiteert Lease a Bike van de schaal van Pon Holdings?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-pon-4" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Lease a Bike profiteert van de robuuste security-infrastructuur en de expertise die op het niveau van Pon Holdings beschikbaar is. Dit omvat gezamenlijke monitoring, geavanceerde threat intelligence en het meeliften op de hoge compliancestandaarden van een grote, internationale groep, waardoor onze beveiliging significant sterker is dan die van een op zichzelf staand bedrijf.</p>
-                                </div>
-                            </div>
-                             <!-- VRAAG 5 (NIEUW) -->
-                            <div class="border-b border-gray-100 last:border-b-0">
-                                <div class="faq-question flex justify-between items-center py-3" onclick="toggleFAQ('faq-pon-5')">
-                                    <span class="text-base font-medium">Hoe groot is de keuzevrijheid in fietsmerken en modellen via Lease a Bike?</span>
-                                    <span class="text-xl text-emerald-600 toggle-icon">+</span>
-                                </div>
-                                <div id="faq-pon-5" class="faq-answer px-0">
-                                    <p class="py-3 text-gray-600">Wij bieden volledige keuzevrijheid! Via onze 1.700+ aangesloten fietsendealers in Nederland zijn ruim 350+ merken en vrijwel elk type fiets beschikbaar voor lease. Dit garandeert dat uw werknemers altijd hun droomfiets kunnen kiezen, ondersteund door het brede portfolio van de Pon Groep.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
-        </main>
-
-        <!-- FOOTER -->
-        <footer class="mt-20 border-t border-gray-200 pt-8 text-center text-sm text-gray-500">
-            <p>Heeft u vragen die hier niet beantwoord zijn? Neem dan contact met ons op via <a href="mailto:security@lease-a-bike.nl" class="text-emerald-600 hover:underline">security@lease-a-bike.nl</a>.</p>
-            <p class="mt-4">© 2025 Lease a Bike. Alle rechten voorbehouden.</p>
-            <p class="text-xs mt-1">Sami Oumghar</p>
-        </footer>
-
-    </div>
+            </div>
+             <div class="mt-16 pt-8 border-t border-gray-200 text-center text-sm text-gray-500">
+                <p class="text-lg font-semibold mb-2 text-gray-800">Heeft u nog vragen?</p>
+                <p>Neem contact op met ons security team via <a href="mailto:security@lease-a-bike.nl" class="text-emerald-600 hover:underline font-medium">security@lease-a-bike.nl</a>.</p>
+                <p class="mt-8 text-sm">© 2025 Lease a Bike. Alle rechten voorbehouden.</p>
+             </div>
+        </div>
+    </footer>
 
     <script>
-        // Functie voor de exclusieve accordeon onder 'De Fundamenten van Onze Security'
-        const mainDetailContentSections = document.querySelectorAll('.detail-accordeon-content-main');
-        const mainDetailHeaders = document.querySelectorAll('.detail-accordeon-header-main');
-        
-        // Initialiseer de uitklapbare details onder Fundamenten als gesloten
-        mainDetailContentSections.forEach(content => {
-            content.classList.remove('open');
-        });
-        
-        // Initialiseer alle main accordeon headers om de '+' te tonen bij laden
-        mainDetailHeaders.forEach(header => {
-            header.querySelector('.toggle-icon').textContent = '+';
-        });
+        lucide.createIcons();
 
-        function toggleMainDetails(targetId) {
-            const targetContent = document.getElementById(targetId);
-            const targetHeader = targetContent.previousElementSibling;
-            const targetIcon = targetHeader.querySelector('.toggle-icon');
-            
-            const isOpen = targetContent.classList.contains('open');
-
-            // Sluit alle andere main content blokken en zet hun iconen terug naar '+'
-            mainDetailContentSections.forEach(content => {
-                if (content.id !== targetId && content.classList.contains('open')) {
-                    content.classList.remove('open');
-                    // Vind het juiste icoon in de gesloten header
-                    const closedIcon = content.previousElementSibling.querySelector('.toggle-icon');
-                    // Controleer of de gesloten header een specifiek icoon heeft (voor de babyblauwe headers)
-                    if (content.previousElementSibling.classList.contains('color-baby-blue')) {
-                         closedIcon.textContent = '+'; // Blijft '+'
-                    } else {
-                         closedIcon.textContent = '+';
-                    }
-                }
-            });
-            
-            // Sluit alle sub-accordeons binnen alle secties (voor een schone start)
-            document.querySelectorAll('.detail-accordeon-content.open').forEach(content => {
-                content.classList.remove('open');
-                content.previousElementSibling.querySelector('.toggle-icon').textContent = '+';
-            });
-
-
-            // Open of sluit de huidige box
-            if (!isOpen) {
-                targetContent.classList.add('open');
-                targetIcon.textContent = '-';
-                // Scroll naar de geopende sectie
-                setTimeout(() => {
-                    targetHeader.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 50); 
-            } else {
-                targetContent.classList.remove('open');
-                targetIcon.textContent = '+';
-            }
-        }
-        
-        // Functie voor de nested accordeons (sub-secties)
-        function toggleDetails(id) {
-            const content = document.getElementById(id);
-            const header = content.previousElementSibling;
-            const icon = header.querySelector('.toggle-icon');
-
-            if (content.classList.contains('open')) {
-                content.classList.remove('open');
-                icon.textContent = '+';
-            } else {
-                content.classList.add('open');
-                icon.textContent = '-';
-            }
-        }
-        
-        // Functie voor de 'Uw Rol' details (simpele Lees Meer knop)
-        function toggleRolDetails(id, button) {
-            const content = document.getElementById(id);
-            const textSpan = button.querySelector('.details-text');
-            const arrowSpan = button.querySelector('span:last-child'); // De pijl
-
-            if (content.classList.contains('visible')) {
-                content.classList.remove('visible');
-                textSpan.textContent = 'Lees de Details';
-                arrowSpan.style.transform = 'rotate(0deg)';
-            } else {
-                content.classList.add('visible');
-                textSpan.textContent = 'Sluit Details';
-                arrowSpan.style.transform = 'rotate(90deg)';
-            }
-        }
-
-        // Functie voor de FAQ accordeons
-        function toggleFAQ(id) {
-            const content = document.getElementById(id);
-            const header = content.previousElementSibling;
-            const icon = header.querySelector('.toggle-icon');
-
-            if (content.classList.contains('show')) {
-                content.classList.remove('show');
-                icon.textContent = '+';
-            } else {
-                // Sluit alle andere FAQ's in dezelfde sectie (alleen in de FAQ, niet in de fundamenten)
-                // Dit zorgt ervoor dat er maar één FAQ-antwoord tegelijk open is binnen een categorie
-                const parentCategory = header.closest('.space-y-2'); // Vind de oudercategorie
-                parentCategory.querySelectorAll('.faq-answer.show').forEach(openAnswer => {
-                    if (openAnswer.id !== id) {
-                        openAnswer.classList.remove('show');
-                        openAnswer.previousElementSibling.querySelector('.toggle-icon').textContent = '+';
-                    }
-                });
-                
-                content.classList.add('show');
-                icon.textContent = '-';
-            }
-        }
-
-        // Initialiseer de exclusieve accordeon functionaliteit bij laden
         document.addEventListener('DOMContentLoaded', () => {
-            const mainHeaders = document.querySelectorAll('.detail-accordeon-header-main');
-            mainHeaders.forEach(header => {
-                header.addEventListener('click', function() {
-                    // De toggleMainDetails functie wordt direct aangeroepen
+            const accordions = document.querySelectorAll('.accordion-trigger');
+            accordions.forEach(accordion => {
+                accordion.addEventListener('click', () => {
+                    const content = document.getElementById(accordion.getAttribute('aria-controls'));
+                    const isExpanded = accordion.getAttribute('aria-expanded') === 'true';
+
+                    // Optional: Close other accordions in the same block when one is opened
+                    if (!isExpanded) {
+                        const parentBlock = accordion.closest('.space-y-4, .grid'); // Adjusted to work with both FAQ and other sections
+                        if(parentBlock) {
+                            parentBlock.querySelectorAll('.accordion-trigger[aria-expanded="true"]').forEach(openAccordion => {
+                                if(openAccordion !== accordion) {
+                                    openAccordion.setAttribute('aria-expanded', 'false');
+                                    document.getElementById(openAccordion.getAttribute('aria-controls')).dataset.state = 'closed';
+                                }
+                            });
+                        }
+                    }
+                    
+                    accordion.setAttribute('aria-expanded', !isExpanded);
+                    content.dataset.state = isExpanded ? 'closed' : 'open';
                 });
             });
+
+            // Sticky Nav Logic
+            const stickyNavWrapper = document.getElementById('sticky-nav-wrapper');
+            const heroSection = document.getElementById('hero');
             
-            // Verberg de FAQ's bij laden (dit is nu de default door CSS)
-            document.querySelectorAll('.faq-answer').forEach(answer => {
-                answer.classList.remove('show'); // Zorgt dat ze zeker gesloten zijn
+            const stickyObserver = new IntersectionObserver(
+                ([e]) => {
+                    stickyNavWrapper.classList.toggle('stuck', e.boundingClientRect.bottom < 0);
+                },
+                { threshold: [0] }
+            );
+            stickyObserver.observe(heroSection);
+            
+            // Active state scrolling voor nav links
+            const navLinks = document.querySelectorAll('.sticky-nav .nav-link');
+            const sections = document.querySelectorAll('.content-section');
+
+            const sectionObserver = new IntersectionObserver(entries => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.id;
+                        navLinks.forEach(link => {
+                            link.classList.toggle('active', link.getAttribute('href') === `#${id}`);
+                        });
+                    }
+                });
+            }, { rootMargin: "-40% 0px -60% 0px" });
+
+            sections.forEach(section => {
+                sectionObserver.observe(section);
             });
         });
-
     </script>
 </body>
 </html>
+
